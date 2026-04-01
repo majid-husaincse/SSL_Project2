@@ -43,4 +43,3 @@ class Game:
         return self.player2 if self.turn else self.player1
     def check_win(self):
         pass
-
