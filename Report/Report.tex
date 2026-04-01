@@ -1,0 +1,163 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx,xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily,
+    columns=fullflexible,
+    frame=none
+}
+
+\vspace{3cm}
+
+\title{\textbf{SSL REPORT} \\ \Large Mini Game Hub}
+\author{Majid Husain \\ Vedansh Garg}
+\date{} % rm -F date
+\begin{document}
+
+\maketitle
+
+\vspace{1cm}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+This is the Spring (2026) semester project for the course SSL (Software and Systems Lab).
+
+\begin{itemize}
+    \item The project integrates Bash for user authentication and Python (Pygame) for GUI gameplay.
+    \item Players log in and their login information is stored securely with encryption.
+    \item The games in the hub are:
+    \begin{enumerate}
+        \item TicTacToe
+        \item Othello
+        \item Connect4
+        \item TBD
+    \end{enumerate}
+    \item At the end of the game, the result is stored and a leaderboard is displayed with visual representations using Matplotlib.
+
+    \item The players are then prompted with an option to play another game or quit.
+\end{itemize}
+
+\section{Running Instructions}
+\begin{itemize}
+    \item The bash script is run using:
+    \begin{verbatim}
+    bash main.sh
+    \end{verbatim}
+
+    \item It prompts the users to input usernames along with their passwords.
+
+    \item If a user is not registered, the script prompts to register a new username with a password.
+
+    \item If both players successfully log in, the script internally calls:
+    \begin{verbatim}
+    python3 game.py <player1> <player2>
+    \end{verbatim}
+
+    \item The game hub then starts, and the players may choose any game from the menu.
+\end{itemize}
+
+\section{Modules Used}
+
+\subsection{NumPy}
+\href{https://www.geeksforgeeks.org/numpy/python-numpy/}{\color{blue}NumPy} is a Python library used for fast and efficient numerical computations and array operations. \\
+It is used to represent the game boards and perform win-condition checks.
+
+\subsection{Matplotlib}
+\href{https://www.geeksforgeeks.org/python/python-introduction-matplotlib/}{\color{blue}Matplotlib} is a Python library used for creating plots and visualizations. \\
+It is used to display graphs and charts of player stats after the game ends.
+
+\subsection{datetime}
+\href{https://www.geeksforgeeks.org/python/python-datetime-module/}{\color{blue}datetime} is a Python module used for handling date and time-related operations. \\
+It is used for in-game timings and adding game dates to \texttt{history.csv}.
+
+\subsection{Pygame-CE}
+\href{https://pygame-gui.readthedocs.io/en/latest/quick_start.html}{\color{blue}Pygame-CE} is a library used for building graphical user interfaces (GUI) and games. \\
+It is used to implement the GUI and player interactions within the game.
+
+\subsection{sys}
+The \href{https://www.geeksforgeeks.org/python/python-sys-module/}{\color{blue}sys module} provides access to command-line arguments and system-specific parameters. \\
+It is used to read player usernames passed as arguments from \texttt{main.sh} to \texttt{game.py}.
+
+
+
+\section{Directory Structure}
+
+\begin{lstlisting}
+project-root/
+    Report/
+        Report.tex
+        Makefile
+    hub/
+        main.sh
+        game.py
+        leaderboard.sh
+        games/
+            tictactoe.py
+            othello.py
+            connect4.py
+        users.tsv
+        history.csv
+\end{lstlisting}
+
+
+
+\section{File descriptions}
+
+\subsection{bash files}
+
+\subsubsection{main.sh}
+
+The bash script which has to be called to start the game hub
+\begin{verbatim}
+    bash main.sh
+\end{verbatim}
+The script prompts to log in two players with their usernames and passwords while doing necessary checks. If the login is successful, the script calls \texttt{game.py} with player usernames as command line arguments.
+\begin{verbatim}
+    python3 game.py <player1> <player2>
+\end{verbatim}
+
+\subsubsection{leaderboard.sh}
+On completion of the game, \texttt{game.py} calls \texttt{leaderboard.sh}. The script reads data from \texttt{history.csv} and prints player stats for each game as formatted tables.
+
+\subsection{python files}
+\subsubsection{game.py}
+\texttt{game.py} is the main Python file which reads player names passed by \texttt{main.sh} and manages the Python-side flow. The game menu, gameplay, post-game recording, and analytics are all managed by \texttt{game.py}.
+The base class \textbf{Game} is also defined in this file.
+
+
+\subsubsection{Games}
+
+\begin{itemize}
+    \item \texttt{tictactoe.py}
+
+    The class TicTacToe and the run function is defined here. \texttt{game.py} calls \texttt{tictactoe.py} if the user selects it from the GUI. The run function returns the winner.
+
+    \item \texttt{othello.py}
+
+    The class Othello and the run function is defined here. \texttt{game.py} calls \texttt{othello.py} if the user selects it from the GUI. The run function returns the winner.
+
+    \item \texttt{connect4.py}
+
+    The class Connect4 and the run function is defined here. \texttt{game.py} calls \texttt{connect4.py} if the user selects it from the GUI. The run function returns the winner.
+\end{itemize}
+
+\subsection{Data files}
+    \subsubsection{users.tsv}
+    A tab-separated file where each line stores the username of a registered player along with the password, stored not as plain text but hashed with SHA-256.
+
+    \subsubsection{history.csv}
+    A comma-separated file that stores the winner, loser, date, and game name as a new row after each game ends.
+    This data is then read by \texttt{leaderboard.sh} to print formatted tables of player stats.
+
+    \subsection{Report}
+
+    \subsubsection{Report.tex}
+    This \texttt{.tex} document contains the detailed report explaining the project. It is compiled into a PDF.
+
+    \subsubsection{makefile}
+    In the same folder as \texttt{Report.tex}, there is the makefile used to compile it into a PDF.
+\end{document}
