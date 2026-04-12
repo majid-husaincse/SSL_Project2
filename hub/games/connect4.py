@@ -45,45 +45,39 @@ class Connect4():
 
     def check_win(self,player,col,row):
         #win needs to be checked only in the column row or diagonal where last item was placed
-        conseq=0   #conseq for consecutive
-        #checking 4 consecutive in the row
-        for i in range (0,self.COLS):
-            if self.board[row][i] == player:
-                conseq+=1
-            else:
-                conseq=0
-            if conseq == 4:
-                return True
-        conseq=0
-        #checking 4 consecutive in the column
-        for j in range (0,self.ROWS):
-            if self.board[j][col] == player:
-                conseq+=1
-            else:
-                conseq=0
-            if conseq == 4:
-                return True
-        conseq=0
-        #checking Main Diagonal
-        for d in range(-6,6):        # [ -6 to 6 is the farthest we can need]
-            if 0 <= row + d < self.ROWS and 0 <= col + d < self.COLS:
-                if self.board[row + d][col + d] == player:
-                    conseq+=1
-                else:
-                    conseq=0
-            if conseq == 4:
-                return True
-        conseq = 0
-        #checking Anti Diagonal 
-        for d in range(-6,6):
-            if 0 <= row - d < self.ROWS and 0 <= col + d < self.COLS:
-                if self.board[row - d][col + d] == player:
-                    conseq+=1
-                else:
-                    conseq=0
-            if conseq == 4:
-                return True
-            
+        # np.lib.stride_tricks.sliding_window_view(arr,window_shape) lists all fixed size sub segments of arr
+        # if True in np.all(arr1 == arr2, axis=1): here used to check if any row of arr1 matches arr2 exactly
+        #extracting the specific row and column
+        Row=self.board[row]
+        Col=self.board[:,col]
+
+        #Win array checks for connected 4
+        Win=np.ones(4,dtype=int)
+        if player == 2:
+            Win += 1
+
+        # Row and col check
+        Row_Subsets = np.lib.stride_tricks.sliding_window_view(Row,window_shape=4)
+        Col_Subsets = np.lib.stride_tricks.sliding_window_view(Col,window_shape =  4)
+        bool_row = True in np.all(Row_Subsets==Win, axis=1)
+        bool_col = True in np.all(Col_Subsets==Win, axis=1)
+        if bool_row or bool_col:
+            return True
+        
+        #main diagonal
+        diagonal = np.diag(self.board, k=col - row)
+        if diagonal.size >= 4:
+            diagonal_Subsets = np.lib.stride_tricks.sliding_window_view(diagonal, window_shape = 4)
+        #anti diagonal
+        anti_diagonal = np.diag(np.fliplr(self.board), k=(cols - 1) - (col + row))
+        if anti_diagonal.size >= 4:
+            anti_Subsets = np.lib.stride_tricks.sliding_window_view(anti_diagonal, window_shape = 4)
+
+        bool_main = True in np.all(diagonal_Subsets == Win, axis=1)
+        bool_anti = True in np.all(anti_Subsets == Win, axis=1)
+        if bool_main or bool_anti:
+            return True
+               
         return False
     
     def board_full(self):
