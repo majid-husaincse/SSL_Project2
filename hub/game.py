@@ -5,18 +5,32 @@ import numpy as np
 
 #Defining the base game class
 class Game:
-    def __init__(self, player1, player2,size):
+    def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
-        self.board_size = size
-        self.turn = 0 #0 is for player1 and 1 is for player2
-        self.board = np.zeros((self.board_size,self.board_size))
+
+        self.player = 1 #current player, 1 is for player1 and 2 is for player2
+
+        self.game_over=False
     def switch_turn(self):
-        self.turn = 1 - self.turn     # switches between 0 and 1
+        self.player = 3 - self.player     # switches between 1 and 2
+
     def current_player(self):
-        return self.player2 if self.turn else self.player1
+        return self.player1 if self.player == 1 else self.player2
+    
+    def reset(self): #to reset the board on R key
+        self.board.fill(0)
+        self.player = 1
+        self.game_over=False
+    def board_full(self):
+        # To check if game is over
+        return 0 not in self.board
+    
+    def Resign(self,player):
+        self.game_over = True
+        return self.player1 if player == 2 else self.player2   # other player
     def check_win(self):
-        pass
+        raise 
 def main():
     pygame.init()
     #Storing player names
