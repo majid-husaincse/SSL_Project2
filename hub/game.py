@@ -20,7 +20,7 @@ class Game:
     
     def reset(self): #to reset the board on R key
         self.board.fill(0)
-        self.turn=0
+        self.player = 3-self.player
         self.game_over=False
     def board_full(self):
         # To check if game is over
