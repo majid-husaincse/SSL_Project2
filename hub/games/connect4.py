@@ -122,10 +122,10 @@ class Connect4(Game):
                     mouse_pos = event.pos
                     if(self.Resign_rect.collidepoint(mouse_pos)):
                         self.game_over = True
-                        player =self.current_player() #winner name
+                        winner = self.current_player() #winner name
                         text = self.font.render(f"{winner} wins", True, ((255,0,0) if player == 1 else (0,0,255)))
                         self.show_text(text)
-                        return self.Resign(player)
+                        return self.Resign(self.player)
                     
                     if(mouse_pos[1]) > 650:
                         continue

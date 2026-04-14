@@ -124,7 +124,8 @@ class Tic_Tac_Toe(Game):
                     pg.quit()
                     sys.exit()
                 if event.type==pg.MOUSEBUTTONDOWN and not self.game_over:
-                    self.circle_sound.play(loops=0) # to play sound on click
+                    sound = self.cross_sound if self.player == 1 else self.circle_sound
+                    sound.play(loops=0) # to play sound on click
                     mX,mY=event.pos
                     if origin[0]<=mX<=origin[0]+board_dim and origin[1]<=mY<=origin[1]+board_dim:
                         r,c=(mY-origin[1])//sq_dim,(mX-origin[0])//sq_dim
