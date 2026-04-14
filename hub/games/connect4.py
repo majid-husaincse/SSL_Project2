@@ -99,7 +99,7 @@ class Connect4(Game):
         pygame.display.set_caption('Connect FOUR')
         running = True
         #font
-        self.font = pygame.font.Font('games/ttt_resources/ArcadeGamer.ttf', 36)
+        self.font = pygame.font.Font('games/c4_resources/ArcadeGamer.ttf', 36)
 
         #Resign button
         self.Resign_text = self.font.render("RESIGN",True,"#00ff00")
