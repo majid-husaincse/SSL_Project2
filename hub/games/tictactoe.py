@@ -11,11 +11,11 @@ sys.path[0] = orig_path
 
 #Dimensions
 width,height=1280,720
-board_dim=600
+board_dim=500
 rows,cols=10,10
 sq_dim=board_dim//cols
 line=2
-origin=[(width-board_dim)//2,(height-board_dim)//2]
+origin=[(width-board_dim)//2,(height-board_dim)//2 + 50]
 #Colors
 bgcolor=(128,128,128)
 linecolor=(23,145,135)
@@ -27,6 +27,8 @@ class Tic_Tac_Toe(Game):
         super().__init__(player1, player2)
         pg.init()
         pg.display.set_caption("10x10 Tic-Tac-Toe")
+        self.bg=pg.image.load("games/ttt_resources/bg.png")
+       
         self.screen=pg.display.set_mode((width,height))
         self.board=np.zeros((rows,cols)) #numpy array for board 
         self.tttboard=pg.image.load("games/ttt_resources/Wooden tic-tac-toe grid in focus.png").convert_alpha()
@@ -37,7 +39,12 @@ class Tic_Tac_Toe(Game):
         self.circle=pg.transform.scale(self.circle,(sq_dim,sq_dim))
         self.cross_sound=pg.mixer.Sound("games/ttt_resources/cross_sound.mp3")
         self.circle_sound=pg.mixer.Sound("games/ttt_resources/circle_sound.mp3")
-
+        self.ghost_cross = self.cross.copy()
+        self.ghost_cross.set_alpha(100)  # Semi-transparent
+        self.ghost_circle = self.circle.copy()
+        self.ghost_circle.set_alpha(100) # Semi-transparent
+        self.small_font = pg.font.Font(None,36)
+        self.big_font = pg.font.Font(None,70)
     def make_board(self): #for making board
         self.screen.blit(self.tttboard, (origin[0], origin[1]))
 
@@ -52,6 +59,21 @@ class Tic_Tac_Toe(Game):
                 elif self.board[r][c]==2:
                     self.screen.blit(self.circle, (x , y ))
 
+    def draw_hover(self):
+        if self.game_over:
+            return
+        mX,mY=pg.mouse.get_pos()
+        # Check if mouse is inside the board
+        if origin[0]<=mX<=origin[0]+board_dim and origin[1]<=mY<=origin[1]+board_dim:
+            c=(mX-origin[0])//sq_dim
+            r=(mY-origin[1])//sq_dim   
+            # Only show hover if the cell is empty
+            if self.board[r][c] == 0:
+                x=origin[0]+c*sq_dim
+                y=origin[1]+r*sq_dim    
+                # Draw ghost piece based on current player
+                ghost=self.ghost_cross if self.player == 1 else self.ghost_circle
+                self.screen.blit(ghost,(x, y)) 
     def check_win(self,player,col,row):
         #win needs to be checked only in the column row or diagonal where last item was placed
         # np.lib.stride_tricks.sliding_window_view(arr,window_shape) lists all fixed size sub segments of arr
@@ -93,6 +115,9 @@ class Tic_Tac_Toe(Game):
     def run(self):
         clock=pg.time.Clock()
 
+        #Resign button
+        # self.Resign_text = self.font.render("RESIGN",True,"#00ff00")
+        # self.Resign_rect = self.Resign_text.get_rect(center=(400, 670))
         while True:
             for event in pg.event.get():
                 if event.type==pg.QUIT:
@@ -112,16 +137,19 @@ class Tic_Tac_Toe(Game):
                 if event.type==pg.KEYDOWN:
                     if event.key==pg.K_r: #Press R to restart
                         self.reset()
-
-            self.screen.fill(bgcolor)
+            self.screen.blit(self.bg, (0, 0))
             self.make_board()
+            self.draw_hover()
             self.mark()
+            font=self.small_font
+            turn_text = font.render(f"Turn: {self.current_player()}", True, (255, 255, 255))
+            if not self.game_over:
+                self.screen.blit(turn_text, (width//2 - turn_text.get_width()//2, 120))
             if self.game_over:
-                # self.winline()
-                winner=self.current_player() # winner name
-                font=pg.font.Font(None,70)
+                winner=self.current_player()
+                font=self.big_font
                 text=font.render(f"{winner} Wins!",True,(255,255,255))
-                text_rect=text.get_rect(center=(width//2,50))
+                text_rect=text.get_rect(center=(width//2, 130))
                 self.screen.blit(text, text_rect)
             pg.display.update()
             clock.tick(60)
