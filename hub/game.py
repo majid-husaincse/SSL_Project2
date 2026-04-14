@@ -3,6 +3,7 @@ import pygame
 import subprocess
 import numpy as np
 
+height, width = 720, 1280
 #Defining the base game class
 class Game:
     def __init__(self, player1, player2):
@@ -29,26 +30,38 @@ class Game:
         self.game_over = True
         return self.player1 if player == 2 else self.player2   # other player
     def check_win(self):
-        raise 
+        raise NotImplementedError("Must be implemented by subclass")
 def main():
     pygame.init()
     #Storing player names
     player1 = sys.argv[1]
     player2 = sys.argv[2]
 
-    screen = pygame.display.set_mode((1280, 720))
+    screen = pygame.display.set_mode((width, height))
     bg = pygame.image.load("games/game_resources/bg.png").convert_alpha()
-    bg= pygame.transform.scale(bg, (1280, 720))
-    bg5 = pygame.image.load("games/game_resources/bg5.png").convert_alpha()
-    bg5= pygame.transform.scale(bg5, (1280, 720))
+    bg= pygame.transform.scale(bg, (width, height))
+    slide1= pygame.image.load("games/game_resources/slide1.png").convert_alpha()
+    slide1= pygame.transform.scale(slide1, (width, height))
+    slide2= pygame.image.load("games/game_resources/slide2.png").convert_alpha()
+    slide2= pygame.transform.scale(slide2, (width, height))
+    slide3= pygame.image.load("games/game_resources/slide3.png").convert_alpha()
+    slide3= pygame.transform.scale(slide3, (width, height))
+    slide4= pygame.image.load("games/game_resources/slide4.png").convert_alpha()
+    slide4= pygame.transform.scale(slide4, (width, height))
+    slide5= pygame.image.load("games/game_resources/slide5.png").convert_alpha()
+    slide5= pygame.transform.scale(slide5, (width, height))
+    slide6= pygame.image.load("games/game_resources/slide6.png").convert_alpha()
+    slide6= pygame.transform.scale(slide6, (width, height))
+    # bg5 = pygame.image.load("games/game_resources/bg5.png").convert_alpha()
+    # bg5= pygame.transform.scale(bg5, (1280, 720))
     bg4 = pygame.image.load("games/game_resources/bg4.png").convert_alpha()
-    bg4= pygame.transform.scale(bg4, (1280, 720))
+    bg4= pygame.transform.scale(bg4, (width, height))
     bg1=pygame.image.load("games/game_resources/bg1.png")
-    bg1= pygame.transform.scale(bg1, (1280, 720))
+    bg1= pygame.transform.scale(bg1, (width, height))
     bg2=pygame.image.load("games/game_resources/bg2.png")
-    bg2= pygame.transform.scale(bg2, (1280, 720))
+    bg2= pygame.transform.scale(bg2, (width, height))
     bg3=pygame.image.load("games/game_resources/bg3.png")
-    bg3= pygame.transform.scale(bg3, (1280, 720))
+    bg3= pygame.transform.scale(bg3, (width, height))
     text_font = pygame.font.Font(None, 50)
     ttt = pygame.image.load("games/game_resources/ttt.png").convert_alpha()
     ttt.set_colorkey((255,255,255))
@@ -92,7 +105,15 @@ def main():
         elif frames<5*time:
             screen.blit(bg4, (0, 0))
         else:
-            screen.blit(bg5, (0, 0))
+            
+            if frames%60 < 15:
+                screen.blit(slide4, (0, 0))
+            elif frames%60 < 30:
+                screen.blit(slide3, (0, 0))
+            elif frames%60 < 45:
+                screen.blit(slide2, (0, 0))
+            else:
+                screen.blit(slide1, (0, 0))
             if frames>6*time:
             # Tic Tac Toe Hover Logic
                 if ttt_rect.collidepoint(mouse_pos):
