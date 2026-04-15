@@ -30,7 +30,7 @@ class Tic_Tac_Toe(Game):
         self.bg=pg.image.load("games/ttt_resources/bg.png")
        
         self.screen=pg.display.set_mode((width,height))
-        self.board=np.zeros((rows,cols)) #numpy array for board 
+        self.board=self.game_board(rows,cols) #empty board
         self.tttboard=pg.image.load("games/ttt_resources/Wooden tic-tac-toe grid in focus.png").convert_alpha()
         self.tttboard=pg.transform.scale(self.tttboard,(board_dim,board_dim))
         self.cross=pg.image.load("games/ttt_resources/cross.png").convert_alpha()
@@ -47,7 +47,6 @@ class Tic_Tac_Toe(Game):
         self.big_font = pg.font.Font(None,70)
     def make_board(self): #for making board
         self.screen.blit(self.tttboard, (origin[0], origin[1]))
-
     def mark(self): #make cross or circle
         for r in range(rows):
             for c in range(cols):

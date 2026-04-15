@@ -27,7 +27,7 @@ class Othello(Game):
         pg.display.set_caption("Othello")
         self.screen=pg.display.set_mode((width,height))
         self.bg=pg.image.load("games/othello_resources/bg.png")
-        self.board=np.zeros((rows,cols)) #numpy array for board
+        self.board=self.game_board(rows,cols) #empty board
         self.gameboard=pg.image.load("games/othello_resources/board.png").convert_alpha()
         self.gameboard=pg.transform.scale(self.gameboard,(board_dim,board_dim))
         self.board1=self.gameboard.get_rect()
@@ -92,7 +92,7 @@ class Othello(Game):
     def check_win(self):
         black_count = np.count_nonzero(self.board == 1)
         white_count = np.count_nonzero(self.board == 2)
-        if black_count+white_count == 64 or self.game_over:
+        if self.board_full() or self.game_over:
             if black_count>white_count:
                 return self.player1
             elif white_count>black_count:

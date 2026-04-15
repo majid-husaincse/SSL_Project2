@@ -2,6 +2,7 @@ import sys
 import pygame
 import subprocess
 import numpy as np
+pygame.init()
 
 height, width = 720, 1280
 #Defining the base game class
@@ -13,11 +14,14 @@ class Game:
         self.player = 1 #current player, 1 is for player1 and 2 is for player2
 
         self.game_over=False
+        self.font = pygame.font.Font('games/c4_resources/ArcadeGamer.ttf', 36)
     def switch_turn(self):
         self.player = 3 - self.player     # switches between 1 and 2
     def current_player(self):
         return self.player2 if self.player == 2 else self.player1
-    
+    def game_board(self,rows,cols):
+        self.board = np.zeros((rows,cols), dtype=int)
+        return self.board
     def reset(self): #to reset the board on R key
         self.board.fill(0)
         self.player = 3-self.player
@@ -105,12 +109,12 @@ def main():
         elif frames<5*time:
             screen.blit(bg4, (0, 0))
         else:
-            
-            if frames%60 < 15:
+            rem = frames%80
+            if rem <10 or rem > 70:
                 screen.blit(slide4, (0, 0))
-            elif frames%60 < 30:
+            elif rem < 20 or rem > 60:
                 screen.blit(slide3, (0, 0))
-            elif frames%60 < 45:
+            elif rem < 30 or rem > 75:
                 screen.blit(slide2, (0, 0))
             else:
                 screen.blit(slide1, (0, 0))
