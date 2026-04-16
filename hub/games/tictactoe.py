@@ -43,10 +43,7 @@ class Tic_Tac_Toe(Game):
         self.ghost_cross.set_alpha(100)  # Semi-transparent
         self.ghost_circle = self.circle.copy()
         self.ghost_circle.set_alpha(100) # Semi-transparent
-        self.small_font = pg.font.Font(None,36)
         self.big_font = pg.font.Font(None,70)
-    def make_board(self): #for making board
-        self.screen.blit(self.tttboard, (origin[0], origin[1]))
     def mark(self): #make cross or circle
         for r in range(rows):
             for c in range(cols):
@@ -58,12 +55,18 @@ class Tic_Tac_Toe(Game):
                 elif self.board[r][c]==2:
                     self.screen.blit(self.circle, (x , y ))
 
+    def draw(self):
+        self.make_board(self.bg,self.tttboard, origin[0], origin[1]  )
+        self.mark()
+        self.draw_hover()
+        pg.display.update()
+
     def draw_hover(self):
         if self.game_over:
             return
         mX,mY=pg.mouse.get_pos()
         # Check if mouse is inside the board
-        if origin[0]<=mX<=origin[0]+board_dim and origin[1]<=mY<=origin[1]+board_dim:
+        if origin[0]<=mX<origin[0]+board_dim and origin[1]<=mY<origin[1]+board_dim:
             c=(mX-origin[0])//sq_dim
             r=(mY-origin[1])//sq_dim   
             # Only show hover if the cell is empty
@@ -113,20 +116,19 @@ class Tic_Tac_Toe(Game):
 
     def run(self):
         clock=pg.time.Clock()
-
-        #Resign button
-        # self.Resign_text = self.font.render("RESIGN",True,"#00ff00")
-        # self.Resign_rect = self.Resign_text.get_rect(center=(400, 670))
         while True:
             for event in pg.event.get():
                 if event.type==pg.QUIT:
                     pg.quit()
                     sys.exit()
-                if event.type==pg.MOUSEBUTTONDOWN and not self.game_over:
+                if event.type==pg.MOUSEBUTTONDOWN:
                     sound = self.cross_sound if self.player == 1 else self.circle_sound
                     sound.play(loops=0) # to play sound on click
                     mX,mY=event.pos
-                    if origin[0]<=mX<=origin[0]+board_dim and origin[1]<=mY<=origin[1]+board_dim:
+                    result = self.check_buttons_press((mX,mY))
+                    if result is not None:
+                        return result
+                    if origin[0]<=mX<=origin[0]+board_dim and origin[1]<=mY<=origin[1]+board_dim and not self.game_over:
                         r,c=(mY-origin[1])//sq_dim,(mX-origin[0])//sq_dim
                         if self.board[r][c]==0:
                             self.board[r][c]=self.player
@@ -138,19 +140,18 @@ class Tic_Tac_Toe(Game):
                     if event.key==pg.K_r: #Press R to restart
                         self.reset()
             self.screen.blit(self.bg, (0, 0))
-            self.make_board()
-            self.draw_hover()
+            self.make_board(self.bg,self.tttboard, origin[0], origin[1]  )
             self.mark()
-            font=self.small_font
-            turn_text = font.render(f"Turn: {self.current_player()}", True, (255, 255, 255))
-            if not self.game_over:
-                self.screen.blit(turn_text, (width//2 - turn_text.get_width()//2, 120))
+            self.draw_hover()
             if self.game_over:
                 winner=self.current_player()
                 font=self.big_font
                 text=font.render(f"{winner} Wins!",True,(255,255,255))
                 text_rect=text.get_rect(center=(width//2, 130))
                 self.screen.blit(text, text_rect)
+                pg.display.update()
+                pg.time.wait(3000)
+                return winner
             pg.display.update()
             clock.tick(60)
 

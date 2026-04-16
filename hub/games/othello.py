@@ -32,14 +32,18 @@ class Othello(Game):
         self.gameboard=pg.transform.scale(self.gameboard,(board_dim,board_dim))
         self.board1=self.gameboard.get_rect()
         self.board1.topleft=origin
-        self.small_font = pg.font.Font(None,36)
+        self.med_font = pg.font.Font(None,36)
         self.big_font = pg.font.Font(None,70)
         self.board[3][3]=1
         self.board[3][4]=2
         self.board[4][3]=2
         self.board[4][4]=1
-    def make_board(self): #for making board
-        self.screen.blit(self.gameboard, self.board1)
+
+    def draw(self):
+        self.make_board(self.bg,self.gameboard, origin[0], origin[1])   
+        self.mark()
+        self.draw_hover()
+        pg.display.update()
         
     def mark(self): #make cross or circle
         for r in range(rows):
@@ -123,8 +127,14 @@ class Othello(Game):
         black = np.count_nonzero(self.board == 1)
         white = np.count_nonzero(self.board == 2)
         font=pg.font.Font(None,36)
-        score_text = font.render(f"{self.player1}: {black}  |  {self.player2}: {white}", True, (255,255,255))
-        self.screen.blit(score_text, (20, 20))
+        pg.draw.circle(self.screen,(255,255,255),(80,200),40)
+        pg.draw.circle(self.screen,(0,0,0),(1030,200),40)
+        text_black = font.render(str(black), True, (0,0,0))
+        text_white = font.render(str(white), True, (255,255,255))
+        self.screen.blit(text_black, (80 - text_black.get_width()//2, 200 - text_black.get_height()//2))
+        self.screen.blit(text_white, (1030 - text_white.get_width()//2, 200 - text_white.get_height()//2))
+        # score_text = font.render(f"{self.player1}: {black}  |  {self.player2}: {white}", True, (255,255,255))
+        # self.screen.blit(score_text, (20, 20))
     def reset(self): #to reset the board on R key
         self.player=1
         self.game_over=False
@@ -141,9 +151,12 @@ class Othello(Game):
                 if event.type==pg.QUIT:
                     pg.quit()
                     sys.exit()
-                if event.type==pg.MOUSEBUTTONDOWN and not self.game_over:
+                if event.type==pg.MOUSEBUTTONDOWN:
                     mX,mY=event.pos
-                    if origin[0]<=mX<origin[0]+board_dim and origin[1]<=mY<origin[1]+board_dim:
+                    result = self.check_buttons_press((mX,mY))
+                    if result is not None:
+                        return result
+                    if origin[0]<=mX<origin[0]+board_dim and origin[1]<=mY<origin[1]+board_dim and not self.game_over:
                         c=(mX-origin[0])//sq_dim
                         r=(mY-origin[1])//sq_dim
                         if not (0<=r<rows and 0<=c<cols):
@@ -162,14 +175,11 @@ class Othello(Game):
                     if event.key==pg.K_r: #Press R to restart
                         self.reset()
             self.screen.blit(self.bg, (0, 0))
-            self.make_board()   
-            self.draw_hover()
+            self.make_board(self.bg,self.gameboard, origin[0], origin[1])
             self.mark()
+            self.draw_hover()
             self.counter()
-            font=self.small_font
-            turn_text = font.render(f"Turn: {self.current_player()}", True, (255, 255, 255))
-            if not self.game_over:
-                self.screen.blit(turn_text, (width//2 - turn_text.get_width()//2, 120))
+            font=self.med_font
             for row in range(rows):
                for col in range(cols):
                     if self.valid_move(self.player,row,col):
