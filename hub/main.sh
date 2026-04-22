@@ -14,7 +14,7 @@ authenticate_user() {
                 read -s -p "Enter Password for $user: " Pass1; echo
                 pass_hash_2=$(echo -n "$Pass1" | sha256sum | awk '{print $1}')
                 if [[ "${pass_hash_1}" == "${pass_hash_2}" ]]; then
-                    echo -e "\e[32mLogin successful\e[0m"
+                    echo -e "\e[32mWelcom back, $user\e[0m"
                     return 0
                 else
                     echo -e "\e[31mPassword does not match. Please retry...\e[0m"
@@ -30,18 +30,28 @@ authenticate_user() {
                 read -p "Username '$user' not found, do you want to register? (Y/N): " a
                 if [[ ${a} == "Y" || ${a} == "y" ]]; then
                     while true; do
+                        
+                        while true; do
                         read -s -p "Create Password: " new_pass; echo
                         if [[ ${#new_pass} -lt 8 || ! "$new_pass" =~ [A-Z] || ! "$new_pass" =~ [a-z] || ! "$new_pass" =~ [0-9] ]]; then
                             echo -e "\e[31mWeak Password! Requirements: 8+ chars, Uppercase, Lowercase, and Number.\e[0m"
-                        else
+                        else 
                             break
                         fi
+                        done
+                        read -s -p "Confirm Password: " confirm_pass; echo
+                        if [[ $new_pass == $confirm_pass ]]; then
+                            pass_hash=$(echo -n "$new_pass" | sha256sum | awk '{print $1}')
+                            echo -e "${user}\t${pass_hash}" >> users.tsv
+            
+                            echo -e "\e[32mUser '${user}' registered and logged in successfully.\e[0m"
+                            return 0  
+                         else
+                            echo -e "\e[31mPasswords do not match! Please try again.\e[0m"
+                        fi
                     done
+                    
                     # Store only the hash part
-                    pass_hash=$(echo -n "$new_pass" | sha256sum | awk '{print $1}')
-                    echo -e "${user}\t${pass_hash}" >> users.tsv
-                    echo -e "\e[32mUser '${user}' registered and logged in successfully.\e[0m"
-                    return 0
                 elif [[ ${a} == "N" || ${a} == "n" ]]; then
                     echo "Returning back."
                     break
@@ -66,22 +76,48 @@ change_password() {
         fi
         # Enter new password
         while true; do
+            while true; do
             read -s -p "Enter new password: " new_pass; echo
             if [[ ${#new_pass} -lt 8 || ! "$new_pass" =~ [A-Z] || ! "$new_pass" =~ [a-z] || ! "$new_pass" =~ [0-9] ]]; then
                 echo -e "\e[31mWeak Password! Requirements: 8+ chars, Uppercase, Lowercase, and Number.\e[0m"
             else
                 break
             fi
+            done
+            read -s -p "Confirm new password: " confirm_new_pass; echo
+            if [[ $new_pass == $confirm_new_pass ]]; then
+                new_hash=$(echo -n "$new_pass" | sha256sum | awk '{print $1}')
+                # Replace old password in file
+                sed -i "s/^${user}\t.*/${user}\t${new_hash}/" users.tsv
+                echo -e "\e[32mPassword updated successfully.\e[0m"
+                return 0
+            else echo -e "\e[31mPasswords do not match! Please try again.\e[0m"
+            fi
         done
-        new_hash=$(echo -n "$new_pass" | sha256sum | awk '{print $1}')
-        # Replace old password in file
-        sed -i "s/^${user}\t.*/${user}\t${new_hash}/" users.tsv
-        echo -e "\e[32mPassword updated successfully.\e[0m"
+        # new_hash=$(echo -n "$new_pass" | sha256sum | awk '{print $1}')
+        # # Replace old password in file
+        # sed -i "s/^${user}\t.*/${user}\t${new_hash}/" users.tsv
+        # echo -e "\e[32mPassword updated successfully.\e[0m"
     else
         echo -e "\e[31mUsername not found.\e[0m"
     fi
 }
+#figlet "WELCOME TO FUNGRID" # used this to get this formatting and then copied and pasted
+clear
+echo -E '__        _______ _     ____ ___  __  __ _____   _____ ___'
+echo -E '\ \      / / ____| |   / ___/ _ \|  \/  | ____| |_   _/ _ \' 
+echo -E ' \ \ /\ / /|  _| | |  | |  | | | | |\/| |  _|     | || | | |'
+echo -E '  \ V  V / | |___| |__| |__| |_| | |  | | |___    | || |_| |'
+echo -E '   \_/\_/  |_____|_____\____\___/|_|  |_|_____|   |_| \___/' 
+                               echo -E                             
+echo -E '         _____ _   _ _   _  ____ ____  ___ ____'  
+echo -E '        |  ___| | | | \ | |/ ___|  _ \|_ _|  _ \' 
+echo -E '        | |_  | | | |  \| | |  _| |_) || || | | |'
+echo -E '        |  _| | |_| | |\  | |_| |  _ < | || |_| |'
+echo -E '        |_|    \___/|_| \_|\____|_| \_\___|____/' 
+
 while true; do
+
     echo "1. Login / Register"
     echo "2. Change Password"
     echo "3. Exit"
