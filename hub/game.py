@@ -2,11 +2,27 @@ import sys
 import pygame as pg
 import subprocess
 import numpy as np
+import os
+import csv
+from datetime import date
+import matplotlib
+import matplotlib.pyplot as plt
 pg.init()
 
 height, width = 720, 1280
+
+def record_result(winner,loser,game_name):
+    file_exist_bool = os.path.isfile('history.csv') and os.path.getsize('history.csv') > 0
+    today = date.today()
+    with open('history.csv','a',newline="") as file:
+        csv_writer = csv.writer(file)
+        if not file_exist_bool:
+            header = ['Winner','Loser','Date','Game']
+            csv_writer.writerow(header)
+        csv_writer.writerow([winner,loser,today,game_name])
 #Defining the base game class
 class Game:
+
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
@@ -183,12 +199,27 @@ def main():
                 sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse_pos = pg.mouse.get_pos()
+                winner = None    # reset har click pe
+                game_name = None
                 if ttt_rect.collidepoint(mouse_pos):
-                    subprocess.run(["python3", "games/tictactoe.py", player1, player2])
+                    result = subprocess.run(["python3", "games/tictactoe.py", player1, player2], capture_output=True, text=True)
+                    winner = result.stdout.splitlines()[-1]
+                    game_name = "TicTacToe"
                 elif othello_rect.collidepoint(mouse_pos):
-                    subprocess.run(["python3", "games/othello.py", player1, player2])
+                    result = subprocess.run(["python3", "games/othello.py", player1, player2], capture_output=True, text=True)
+                    winner = result.stdout.splitlines()[-1]
+                    game_name = "Othello"
                 elif connect4_rect.collidepoint(mouse_pos):
-                    subprocess.run(["python3", "games/connect4.py", player1, player2])
+                    result = subprocess.run(["python3", "games/connect4.py", player1, player2], capture_output=True, text=True)
+                    winner = result.stdout.splitlines()[-1]
+                    game_name = "Connect4"
+
+                if winner is not None and game_name is not None:
+                    if winner == "Draw":
+                        loser = "Draw"
+                    else:
+                        loser = player2 if winner == player1 else player1
+                    record_result(winner, loser, game_name)
         frames+=1
         time = 20
         if frames<time:
