@@ -32,7 +32,7 @@ for GAME in $GAMES; do
     echo "----------------------------------------------"
 
     # Get all unique players for this game
-    PLAYERS=` $DATA_LINES | grep -v "Draw" | grep -v . | awk -F',' -v game="$GAME" 'BEGIN{ OFS = "\n"} $4==game {print $1,$2}' | sort -u`
+    PLAYERS=` $DATA_LINES | grep -v "Draw" | grep -v ^$ | awk -F',' -v game="$GAME" ' $4==game {print $1; print $2}' | sort -u`
 
     # Build temp data: player wins losses ratio
     TEMP_DATA=""

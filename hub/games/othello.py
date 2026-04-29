@@ -132,7 +132,8 @@ class Othello(Game):
         self.screen.blit(text_black, (80 - text_black.get_width()//2, 200 - text_black.get_height()//2))
         self.screen.blit(text_white, (1030 - text_white.get_width()//2, 200 - text_white.get_height()//2))
     def reset(self): #to reset the board on R key
-        self.player=1
+        self.player=2
+        self.switch_turn()
         self.game_over=False
         self.board=np.zeros((rows,cols)) #numpy array for board
         self.board[3][3]=1

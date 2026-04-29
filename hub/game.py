@@ -22,12 +22,46 @@ def record_result(winner,loser,game_name):
             header = ['Winner','Loser','Date','Game']
             csv_writer.writerow(header)
         csv_writer.writerow([winner,loser,today,game_name])
+def post_game_options(screen):
+    title = get_font(42,'Nice').render('Game over...',True,(255,255,255))
+    title_rect = title.get_rect(center = (width/2,200))
+    play_text = get_font(36,'Nice').render('Main menu',True,(100,255,100))
+    exit_text = get_font(36,'Nice').render('quit',True,(255,100,100))
+    Background = pg.image.load('games/game_resources/leaderboard_background.png')
+    options = [play_text,exit_text]
+    while True:
+        rects=[]
+        screen.blit(Background,(0,0))
+        screen.blit(title,title_rect)
+        mouse_pos = pg.mouse.get_pos()
+
+        for i in range(2):
+            rect = pg.Rect(480,270+90*i,320,60)
+            color = (100,100,180) if rect.collidepoint(mouse_pos) else (60,60,100)
+            pg.draw.rect(screen,color,rect,border_radius = 12)
+            screen.blit(options[i],options[i].get_rect(center = rect.center))
+            rects.append(rect)
+            pg.display.update()
+        for event in pg.event.get():
+            if event.type ==pg.QUIT:
+                pg.quit
+                sys.exit
+            if event.type ==pg.MOUSEBUTTONDOWN:
+                if rects[1].collidepoint(event.pos):
+                    pg.quit()
+                    sys.exit
+                if rects[0].collidepoint(event.pos):
+                    return
+
+
+        
+        
 def show_sort_options(screen):
     title = get_font(42,'Nice').render('Sort Leaderboard by',True,(255,255,255))
     title_rect = title.get_rect(center=(width/2,200))
     wins_text = get_font(36,'Nice').render('Sort By Wins',True,(150,255,150))
     losses_text = get_font(36,'Nice').render('Sort By loss',True,(255,150,150))
-    ratio_text = get_font(36,'Nice').render('Sort By W/D',True,(150,150,255))
+    ratio_text = get_font(36,'Nice').render('Sort By W/L',True,(150,150,255))
     options_list = [wins_text,losses_text,ratio_text]
     metric_list = ['wins','losses','ratio']
     Leaderboard_Background = pg.image.load('games/game_resources/leaderboard_background.png')
@@ -100,9 +134,9 @@ class Game:
         self.turn_rect = self.turn_text.get_rect(center=(640, 140))
         self.draw_offered = False
         
-        #Resign button
+        #Resign
         self.Resign_text = get_font(36,'Arcade').render("RESIGN",True,(255,100,100))
-        #offer-Draw
+        #offer Draw
         self.OfferDraw_text = get_font(36,'Arcade').render("DRAW", True, (100, 255, 100))
 
         self.Resign1_rect = pg.Rect(50, 300, 200, 100)
@@ -113,13 +147,14 @@ class Game:
         self.player = 3 - self.player     # switches between 1 and 2
         self.turn_text = get_font(28,'Nice').render(f"Turn: {self.current_player()}", True, (255,255,255))
     def current_player(self):
-        return self.player2 if self.player == 2 else self.player1
+        return "Draw" if self.player == 0 else self.player1 if self.player == 1 else self.player2
     def game_board(self,rows,cols):
         self.board = np.zeros((rows,cols), dtype=int)
         return self.board
     def reset(self): #to reset the board on R key
         self.board.fill(0)
-        self.player = 3-self.player
+        self.player=2
+        self.switch_turn()
         self.game_over=False
     def board_full(self):
         # To check if game is over
@@ -135,10 +170,10 @@ class Game:
         self.screen.blit(self.button, (1030,300))
         self.screen.blit(self.button, (50,400))
         self.screen.blit(self.button, (1030,400))
-        self.screen.blit(self.OfferDraw_text, (80,430))
-        self.screen.blit(self.OfferDraw_text,(1080,430))
-        self.screen.blit(self.Resign_text, (60,330)) 
-        self.screen.blit(self.Resign_text, (1040,330))
+        self.screen.blit(self.OfferDraw_text, center:=(80,430))
+        self.screen.blit(self.OfferDraw_text,center:=(1080,430))
+        self.screen.blit(self.Resign_text, center:=(60,330))
+        self.screen.blit(self.Resign_text, center:=(1040,330))
         if not self.draw_offered and not self.game_over:
             self.screen.blit(self.turn_text, self.turn_rect) 
 
@@ -155,7 +190,7 @@ class Game:
         #show text in GUI
         self.screen.blit(text, pos)
         pg.display.update()
-        pg.time.wait(3000)
+        pg.time.wait(1000)
         
     def Offer_Draw(self,player):
         self.draw_offered = True
@@ -202,6 +237,12 @@ class Game:
                 return "Draw"
     def check_win(self):
         raise NotImplementedError("Must be implemented by subclass")
+#stats
+Stats_text = get_font(46,'Nice').render("STATS",True,(100,200,200))
+Stats_rect = Stats_text.get_rect(center = (1080,110))
+#Leaderboard
+Leaderboard_text = get_font(32,'Nice').render("Leaderboard",True,(100,200,200))
+Leaderboard_rect = Leaderboard_text.get_rect(center = (200,110))
 def main():
     pg.init()
     #Storing player names
@@ -257,16 +298,25 @@ def main():
                 mouse_pos = pg.mouse.get_pos()
                 winner = None    # reset har click pe
                 game_name = None
+                if Leaderboard_rect.collidepoint(mouse_pos):
+                    metric = show_sort_options(screen)
+                    subprocess.run(["bash","leaderboard.sh",metric])                   
+                if Stats_rect.collidepoint(mouse_pos):
+                    show_graphs(screen)
+
                 if ttt_rect.collidepoint(mouse_pos):
                     result = subprocess.run(["python3", "games/tictactoe.py", player1, player2], capture_output=True, text=True)
+                    print(result.stderr)
                     winner = result.stdout.splitlines()[-1]
                     game_name = "TicTacToe"
                 elif othello_rect.collidepoint(mouse_pos):
                     result = subprocess.run(["python3", "games/othello.py", player1, player2], capture_output=True, text=True)
+                    print(result.stderr)
                     winner = result.stdout.splitlines()[-1]
                     game_name = "Othello"
                 elif connect4_rect.collidepoint(mouse_pos):
                     result = subprocess.run(["python3", "games/connect4.py", player1, player2], capture_output=True, text=True)
+                    print(result.stderr)
                     winner = result.stdout.splitlines()[-1]
                     game_name = "Connect4"
 
@@ -279,6 +329,7 @@ def main():
                     metric = show_sort_options(screen)
                     subprocess.run(["bash","leaderboard.sh",metric])
                     show_graphs(screen)
+                    post_game_options(screen)
         frames+=1
         time = 20
         if frames<time:
@@ -329,6 +380,11 @@ def main():
                     disp_c4 = connect4_rect
                     img_c4 = connect4
                 screen.blit(img_c4, disp_c4)
+        button = pg.image.load('games/game_resources/button.png')
+        screen.blit(button,(50,50))
+        screen.blit(button,(930,50))
+        screen.blit(Stats_text,Stats_rect)
+        screen.blit(Leaderboard_text,Leaderboard_rect)
         
         pg.display.update()
         clock.tick(60)
