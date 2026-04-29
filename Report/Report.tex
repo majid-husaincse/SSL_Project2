@@ -1,8 +1,8 @@
 \documentclass[12pt]{article}
-\usepackage{amsmath}
 \usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage{forest}
+\usepackage{dirtree}
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage{booktabs}
@@ -69,45 +69,26 @@ The project leverages several libraries to handle different aspects of the gamin
 \end{itemize}
 
 \section{Directory Structure}
-\begin{center}
-\begin{forest}
-  for tree={
-    font=\ttfamily,
-    grow'=0,
-    child anchor=west,
-    parent anchor=south,
-    anchor=west,
-    calign=first,
-    edge path={
-      \noexpand\path [draw, \forestoption{edge}]
-      (!u.south west) +(7.5pt,0) |- node[fill,inner sep=1.25pt] {} (.child anchor)\forestoption{edge label};
-    },
-    before typesetting nodes={
-      if n=1 {insert before={[,phantom]}} {}
-    },
-    fit=band,
-    before computing xy={l=25pt},
-  }
-[hub/
-  [main.sh]
-  [users.tsv]
-  [game.py]
-  [games/
-    [connect4.py]
-    [tictactoe.py]
-    [othello.py]
-    [game\_resources/]
-    [c4\_resources/]
-    [ttt\_resources/]
-    [othello\_resources/]
-  ]
-  [leaderboard.sh]
-  [history.csv]
-  [matplot.py]
-]
-\end{forest}
 
-\end{center}
+\dirtree{%
+.1 hub/.
+.2 main.sh.
+.2 users.tsv.
+.2 game.py.
+.2 games/.
+.3 connect4.py.
+.3 tictactoe.py.
+.3 othello.py.
+.3 game\_resources/.
+.3 c4\_resources/.
+.3 ttt\_resources/.
+.3 othello\_resources/.
+.2 leaderboard.sh.
+.2 history.csv.
+.2 matplot.py.
+}
+
+
 \begin{itemize}
         \item \texttt{main.sh}: Entry point: authentication shell script
         \item \texttt{users.tsv}: User registry (hashed passwords)
@@ -117,7 +98,7 @@ The project leverages several libraries to handle different aspects of the gamin
         \item \texttt{leaderboard.sh}: Bash leaderboard printer
         \item \texttt{history.csv}: Persistent match history
         \item \texttt{matplot.py}: Matplotlib chart generator
-        \item The different \texttt{resources} folders contain the images and fonts used for that game. 
+        \item The different \texttt{resources} folders contain the images and fonts used for that game.
     \end{itemize}
 \section{Running Instructions}
 \begin{enumerate}
@@ -211,7 +192,7 @@ All three game modules extend the abstract \texttt{Game} class defined in \textt
 \end{description}
 
 \subsection{Leaderboard (\texttt{leaderboard.sh})}
-The leaderboard is generated purely using Bash script from \texttt{history.csv}. 
+The leaderboard is generated purely using Bash script from \texttt{history.csv}.
 The script reads \texttt{history.csv} and prints a formatted table to the terminal showing, per game, per user: number of wins, number of losses, and Win/Loss ratio, sorted by one of these metrics. The GUI allows the user to choose which metric they want the leaderboard sorted by, and pass this to leaderboard.sh.
 
 \begin{figure}[h]
@@ -267,7 +248,7 @@ plt.savefig('charts/bar.png', dpi=300,
 \subsubsection*{Pie Chart -- Game Popularity}
 The pie chart shows the proportion of total games played across Tic-Tac-Toe, Connect 4, and Othello.
 \\ \\
-The statistics displayed are as follows: 
+The statistics displayed are as follows:
 
 \begin{figure}[h!]
     \centering
@@ -411,7 +392,7 @@ Circular indicators on the UI show real-time piece counts for both players durin
 \begin{enumerate}
     \item \textbf{Fixed resolution} – The application window is hard-coded to $1280 \times 720$ with no support for dynamic resizing or full-screen modes.
     \item \textbf{Warning window for resign} - Add a warning window when a player clicks Resign to confirm.
-    
+
     \item \textbf{Better directory structure} - Sort all the resources into one folder and appropriate sub folders.
     \item \textbf{Leaderboard formatting} - Add colours and fonts for better formatting in terminal.
     \item \textbf{Add game instructions} - Add a window containing the game instructions for different games in \texttt{How to Play}
