@@ -11,8 +11,8 @@ authenticate_user() {
         echo -e "\e[31mError: Username can only contain letters, numbers and underscores.\e[0m"
         continue
         fi
-        if grep -q -E "^${user}[[:space:]]" users.tsv; then # to check if the username exists in the users.tsv file
-            pass_hash_1=$(grep -E "^${user}$(printf '\t')" users.tsv | awk '{print $2}') # comparing password by hashing the entered password and comparing it to the stored hash in the users.tsv file
+        if grep -q -E "^${user}[[:space:]]" users.tsv; then # check if the username exists in the users.tsv file
+            pass_hash_1=$(grep -E "^${user}$(printf '\t')" users.tsv | awk '{print $2}') # hash entered passwd and compare to stored passwd in users.tsv
             while true; do 
                 read -s -p "Enter Password for $user: " Pass1; echo
                 pass_hash_2=$(echo -n "$Pass1" | sha256sum | awk '{print $1}') # hashing the entered password using sha256sum
@@ -38,7 +38,7 @@ authenticate_user() {
                         while true; do
                         read -s -p "Create Password: " new_pass; echo # conditions on password
                         if [[ ${#new_pass} -lt 8 || ! "$new_pass" =~ [A-Z] || ! "$new_pass" =~ [a-z] || ! "$new_pass" =~ [0-9] ]]; then
-                            echo -e "\e[31mWeak Password! Requirements: 8+ chars, Uppercase, Lowercase, and Number.\e[0m"
+                            echo -e "\e[31mWeak Password! Requirements: 8 or more chars, Uppercase, Lowercase, and Number.\e[0m"
                         else 
                             break
                         fi
@@ -84,7 +84,7 @@ change_password() {
             while true; do
             read -s -p "Enter new password: " new_pass; echo
             if [[ ${#new_pass} -lt 8 || ! "$new_pass" =~ [A-Z] || ! "$new_pass" =~ [a-z] || ! "$new_pass" =~ [0-9] ]]; then
-                echo -e "\e[31mWeak Password! Requirements: 8+ chars, Uppercase, Lowercase, and Number.\e[0m"
+                echo -e "\e[31mWeak Password! Requirements: 8 or more chars, Uppercase, Lowercase, and Number.\e[0m"
             else
                 break
             fi

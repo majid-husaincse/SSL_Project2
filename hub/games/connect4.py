@@ -3,11 +3,11 @@ import os
 import numpy as np
 import pygame as pg
 
-#importing parent class
+#importing parent class and Fonts
 orig_path = sys.path[0]
 sys.path[0] += ('/..')
-from Fonts import get_font
 from game import Game
+from Fonts import get_font
 sys.path[0] = orig_path
 
 #global variables
@@ -21,8 +21,8 @@ origin = [370,160]
 #Game defining class
 class Connect4(Game):
 
-    def __init__(self, player1, player2):
-        super().__init__(player1, player2)
+    def __init__(self, player1, player2): # constructor to initialize the game state, load images, and set up the board dimensions 
+        super().__init__(player1, player2) #initialise variables from parent class
         pg.init()
         #Board-Size:
         self.ROWS = 7
@@ -36,26 +36,27 @@ class Connect4(Game):
         self.red = pg.transform.scale(self.red, circles_size)
         self.yellow = pg.image.load('games/c4_resources/yellow.png')
         self.yellow = pg.transform.scale(self.yellow, circles_size)
-        self.red_transparent = self.red.copy()
+        self.red_transparent = self.red.copy() # transparent version of the piece for hover effect
         self.red_transparent.set_alpha(100) 
-        self.yellow_transparent = self.yellow.copy()
+        self.yellow_transparent = self.yellow.copy() 
         self.yellow_transparent.set_alpha(100)
 
-    def find_row(self, col):
+    def find_row(self, col): # finds the lowest empty row in the specified column to drop a piece (lowest empty index in the column)
+        # returns the row index if found and None if column is full
         for i in np.arange(self.ROWS-1, -1, -1):
             if self.board[i][col] == 0:
                 return i
         return None
 
     def drop(self,col,player):
-        #returns the row where item gets placed
+        #adds the piece to the specific row
         for i in np.arange(self.ROWS-1,-1,-1):
             if self.board[i][col] == 0:
                 self.board[i][col] = player
                 return i
         return None
     
-    def mark(self):
+    def mark(self): # to draw the board based on current state of board array
         for r in range(self.ROWS):
             for c in range(self.COLS):
                 #red for player1 yellow for player2
@@ -64,9 +65,9 @@ class Connect4(Game):
                 elif self.board[r][c] == 2:
                     self.screen.blit(self.yellow, (board_origin[0]+c*column_size, board_origin[1]+r*row_size-7))
 
-    def draw_hover(self):
+    def draw_hover(self): # semi transparent piece (ghost piece) on the board to indicate where the piece would be placed if they click
         mouse_pos = pg.mouse.get_pos()
-        #ghost piece
+        #semi transparent piece
         if self.inside_board(mouse_pos):
             col = (mouse_pos[0] - board_origin[0])// column_size
             row = self.find_row(col)
@@ -78,14 +79,15 @@ class Connect4(Game):
                             self.screen.blit(self.yellow_transparent, (board_origin[0]+col*column_size, board_origin[1] + row*row_size-7))
         
     def draw(self):
-        self.make_board(self.bg,self.board_photo, origin[0], origin[1]  )
-        self.mark()
-        self.draw_hover()
+        self.make_board(self.bg,self.board_photo, origin[0], origin[1]) # to draw the background and board every frame
+        self.mark() #draw the pieces on the board based on the current state
+        self.draw_hover() # to draw ghost piece based on mouse position and player
         pg.display.update()
     def check_win(self,player,col,row):
         #win needs to be checked only in the column row or diagonal where last item was placed
         # np.lib.stride_tricks.sliding_window_view(arr,window_shape) lists all fixed size sub segments of arr
         # if True in np.all(arr1 == arr2, axis=1): here used to check if any row of arr1 matches arr2 exactly
+
         #extracting the specific row and column
         Row=self.board[row]
         Col=self.board[:,col]
@@ -119,7 +121,7 @@ class Connect4(Game):
                 return True
                
         return False
-    def inside_board(self,mouse_pos):
+    def inside_board(self,mouse_pos): # checks if mouse position is inside board
         return (board_origin[0] <= mouse_pos[0] < board_origin[0] + self.COLS*column_size) and (board_origin[1] <= mouse_pos[1] < board_origin[1] + self.ROWS*row_size)
     #Main Loop
     def run(self):
@@ -148,14 +150,14 @@ class Connect4(Game):
                     if result is not None:
                         return result
                     
-                    if(self.inside_board(mouse_pos)):
+                    if(self.inside_board(mouse_pos)): # checking if click was inside board
                         col = (mouse_pos[0] - board_origin[0])// column_size
                         player = self.player
                         row = self.drop(col,player)
                         if row is not None:
                             if self.check_win(player, col, row):
                                 self.game_over = True
-                                #if Winner found:
+                                #if Winner is found:
                                 self.draw()
                                 winner = self.current_player() #winner name
                                 text = get_font(36,'Nice').render(f"{winner} wins", True, ((255,0,0) if self.player == 1 else (255,255,0)))
@@ -163,23 +165,23 @@ class Connect4(Game):
                                 self.show_text(text,(520,670))
                                 return winner
                         
-                        #move on with next move
+                        #move on to next move
                             self.switch_turn()
                     if self.board_full():
                         self.game_over = True
 
                         #Board full but no winner...
                         self.draw()
-                        tie_text = get_font(36,'Nice').render("Match tied", True, (255, 255, 255))
+                        tie_text = self.font.render("Match tied", True, (255, 255, 255))
                         self.show_text(tie_text,(520,670))
-                        return "Draw"
+                        return "Game Drawn"
             self.draw()
             pg.display.update()
             clock.tick(60)
 
 if __name__ == "__main__":
-    player1 = sys.argv[1]
+    player1 = sys.argv[1] # player names from CLI
     player2 = sys.argv[2]
-    game = Connect4(player1, player2)
-    winner = game.run()
-    print(f"{winner}")
+    game = Connect4(player1, player2) #instance of the Connect4 class for the gameplay
+    winner = game.run() 
+    print(f"{winner}")  

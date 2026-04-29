@@ -1,3 +1,4 @@
+#seperate script to initialise all fonts
 import pygame as pg
 def get_font(size,style = None):
     if style == 'Arcade':
