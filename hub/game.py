@@ -7,6 +7,7 @@ import csv
 from datetime import date
 import matplotlib
 import matplotlib.pyplot as plt
+from Fonts import get_font
 pg.init()
 
 height, width = 720, 1280
@@ -22,14 +23,11 @@ def record_result(winner,loser,game_name):
             csv_writer.writerow(header)
         csv_writer.writerow([winner,loser,today,game_name])
 def show_sort_options(screen):
-    font1 = pg.font.Font('games/c4_resources/niceFont.ttf', 42)
-    font2 = pg.font.Font('games/c4_resources/niceFont.ttf', 36)
-    font3 = pg.font.Font('games/c4_resources/niceFont.ttf', 28)
-    title = font1.render('Sort Leaderboard by',True,(255,255,255))
+    title = get_font(42,'Nice').render('Sort Leaderboard by',True,(255,255,255))
     title_rect = title.get_rect(center=(width/2,200))
-    wins_text = font2.render('Sort By Wins',True,(150,255,150))
-    losses_text = font2.render('Sort By loss',True,(255,150,150))
-    ratio_text = font2.render('Sort By W/D',True,(150,150,255))
+    wins_text = get_font(36,'Nice').render('Sort By Wins',True,(150,255,150))
+    losses_text = get_font(36,'Nice').render('Sort By loss',True,(255,150,150))
+    ratio_text = get_font(36,'Nice').render('Sort By W/D',True,(150,150,255))
     options_list = [wins_text,losses_text,ratio_text]
     metric_list = ['wins','losses','ratio']
     Leaderboard_Background = pg.image.load('games/game_resources/leaderboard_background.png')
@@ -52,17 +50,15 @@ def show_sort_options(screen):
             if event.type == pg.MOUSEBUTTONDOWN:
                 for i in range(3):
                     if(rects[i].collidepoint(event.pos)):
-                        return_text = font3.render(f"Leaderboard sorted by {metric_list[i]} shown on terminal",True,"#f5e342")
+                        return_text = get_font(28,'Nice').render(f"Leaderboard sorted by {metric_list[i]} shown on terminal",True,"#f5e342")
                         screen.blit(return_text,return_text.get_rect(center = (width/2,550)))
                         pg.display.update()
                         pg.time.wait(1000)
                         return metric_list[i]
 def show_graphs(screen):
     subprocess.run(["python3","matplot.py"])
-    font = pg.font.Font(None,32)
-    arcade_font = pg.font.Font('games/c4_resources/ArcadeGamer.ttf', 36)
-    top_text = arcade_font.render('STATISTICS',True,(100,255,255))
-    exit_text = font.render("Press any key to continue", True, (255, 155, 155))
+    top_text = get_font(36,'Arcade').render('STATISTICS',True,(100,255,255))
+    exit_text = get_font(32).render("Press any key to continue", True, (255, 155, 155))
     charts = []
     if os.path.isfile('charts/bar.png'):
         bar_chart = pg.image.load('charts/bar.png')
@@ -83,8 +79,8 @@ def show_graphs(screen):
             chart_no +=1
         pg.display.update()
         for event in pg.event.get():
-      #      if event.type == pg.KEYDOWN:
-       #         return
+            if event.type == pg.KEYDOWN:
+                return
             if event.type == pg.QUIT:
                 pg.quit()
                 sys.exit()
@@ -98,20 +94,16 @@ class Game:
         self.player = 1 #current player,1 is for player1 and 2 is for player2
         self.game_over = False
         self.screen = pg.display.set_mode((width,height))
-        self.font = pg.font.Font('games/c4_resources/ArcadeGamer.ttf', 36)
-        self.small_font = pg.font.Font('games/c4_resources/niceFont.ttf', 28)
-        self.nice_font = pg.font.Font('games/c4_resources/niceFont.ttf', 36)
-        self.small_nice_font = pg.font.Font('games/c4_resources/niceFont.ttf', 20)
-        self.button = pg.image.load('games/c4_resources/button.png')
+        self.button = pg.image.load('games/game_resources/button.png')
         self.button = pg.transform.scale(self.button,(200,100))
-        self.turn_text = self.small_font.render(f"Turn: {self.current_player()}", True, (255,255,255))
+        self.turn_text = get_font(28,'Nice').render(f"Turn: {self.current_player()}", True, (255,255,255))
         self.turn_rect = self.turn_text.get_rect(center=(640, 140))
         self.draw_offered = False
         
         #Resign button
-        self.Resign_text = self.font.render("RESIGN",True,(255,100,100))
+        self.Resign_text = get_font(36,'Arcade').render("RESIGN",True,(255,100,100))
         #offer-Draw
-        self.OfferDraw_text = self.font.render("DRAW", True, (100, 255, 100))
+        self.OfferDraw_text = get_font(36,'Arcade').render("DRAW", True, (100, 255, 100))
 
         self.Resign1_rect = pg.Rect(50, 300, 200, 100)
         self.Resign2_rect = pg.Rect(1030, 300, 200, 100)
@@ -119,7 +111,7 @@ class Game:
         self.OfferDraw2_rect = pg.Rect(1030, 400, 200, 100)
     def switch_turn(self):
         self.player = 3 - self.player     # switches between 1 and 2
-        self.turn_text = self.small_font.render(f"Turn: {self.current_player()}", True, (255,255,255))
+        self.turn_text = get_font(28,'Nice').render(f"Turn: {self.current_player()}", True, (255,255,255))
     def current_player(self):
         return self.player2 if self.player == 2 else self.player1
     def game_board(self,rows,cols):
@@ -150,9 +142,9 @@ class Game:
         if not self.draw_offered and not self.game_over:
             self.screen.blit(self.turn_text, self.turn_rect) 
 
-        player1_text = self.small_font.render(f"{self.player1}", True, (255,0,0))
+        player1_text = get_font(28,'Nice').render(f"{self.player1}", True, (255,0,0))
         self.screen.blit(player1_text, (center:=(80,70)))
-        player2_text = self.small_font.render(f"{self.player2}", True, (255,255,0))
+        player2_text = get_font(28,'Nice').render(f"{self.player2}", True, (255,255,0))
         self.screen.blit(player2_text, (center:=(1080, 70)))
     
     def Resign(self,player):
@@ -169,8 +161,7 @@ class Game:
         self.draw_offered = True
         self.draw()
         opponent =  self.player2 if player == self.player1 else self.player1
-        font = self.small_nice_font
-        offer_text = font.render(f"{opponent}, {player} offers draw [Y/N]", True, (255,255,255))
+        offer_text = get_font(20,'Nice').render(f"{opponent}, {player} offers draw [Y/N]", True, (255,255,255))
         self.screen.blit(offer_text, (420,135))
         pg.display.update()
         while True:
@@ -184,16 +175,14 @@ class Game:
     def check_buttons_press(self, mouse_pos):
         if(self.Resign1_rect.collidepoint(mouse_pos)):
             self.game_over = True
-            winner = self.player2  # one resigned 2 wins
-            font = self.nice_font
-            text = font.render(f"{winner} wins", True, (255,255,0))
+            winner = self.player2  # one resigned 2 wins 
+            text = get_font(36,'Nice').render(f"{winner} wins", True, (255,255,0))
             self.show_text(text,(520,670))
             return self.Resign(1)
         if(self.Resign2_rect.collidepoint(mouse_pos)):
             self.game_over = True
             winner = self.player1  # two resigned 1 wins
-            font = self.nice_font
-            text = font.render(f"{winner} wins", True, (255,0,0))
+            text = get_font(36,'Nice').render(f"{winner} wins", True, (255,0,0))
             self.show_text(text,(520,670))
             return self.Resign(2)
         if(self.OfferDraw1_rect.collidepoint(mouse_pos)):
@@ -201,14 +190,14 @@ class Game:
             result = self.Offer_Draw(self.player1)
             if result is not None:
                 self.game_over = True
-                tie_text = self.font.render("Match tied", True, (255,255,255))
+                tie_text = get_font(36,'Arcade').render("Match tied", True, (255,255,255))
                 self.show_text(tie_text,(520,670))
                 return "Draw"
         if(self.OfferDraw2_rect.collidepoint(mouse_pos)):
             result = self.Offer_Draw(self.player2)
             if result == "Draw":
                 self.game_over = True
-                tie_text = self.font.render("Match tied", True, (255,255,255))
+                tie_text = get_font(36,'Arcade').render("Match tied", True, (255,255,255))
                 self.show_text(tie_text,(520,670))
                 return "Draw"
     def check_win(self):
@@ -243,7 +232,6 @@ def main():
     bg2= pg.transform.scale(bg2, (width, height))
     bg3=pg.image.load("games/game_resources/bg3.png")
     bg3= pg.transform.scale(bg3, (width, height))
-    text_font = pg.font.Font(None, 50)
     ttt = pg.image.load("games/game_resources/ttt.png").convert_alpha()
     ttt.set_colorkey((255,255,255))
     ttt_rect = ttt.get_rect(midbottom=(1010, 660))

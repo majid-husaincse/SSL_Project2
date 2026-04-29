@@ -6,6 +6,7 @@ import pygame as pg
 #importing parent class
 orig_path = sys.path[0]
 sys.path[0] += ('/..')
+from Fonts import get_font
 from game import Game
 sys.path[0] = orig_path
 
@@ -157,10 +158,9 @@ class Connect4(Game):
                                 #if Winner found:
                                 self.draw()
                                 winner = self.current_player() #winner name
-                                font = pg.font.Font('games/c4_resources/niceFont.ttf', 36)
-                                text = font.render(f"{winner} wins", True, ((255,0,0) if self.player == 1 else (255,255,0)))
+                                text = get_font(36,'Nice').render(f"{winner} wins", True, ((255,0,0) if self.player == 1 else (255,255,0)))
 
-                                self.show_text(text,(900,350))
+                                self.show_text(text,(520,670))
                                 return winner
                         
                         #move on with next move
@@ -170,9 +170,9 @@ class Connect4(Game):
 
                         #Board full but no winner...
                         self.draw()
-                        tie_text = self.font.render("Match tied", True, (255, 255, 255))
+                        tie_text = get_font(36,'Nice').render("Match tied", True, (255, 255, 255))
                         self.show_text(tie_text,(520,670))
-                        return "Game Drawn"
+                        return "Draw"
             self.draw()
             pg.display.update()
             clock.tick(60)
@@ -182,7 +182,4 @@ if __name__ == "__main__":
     player2 = sys.argv[2]
     game = Connect4(player1, player2)
     winner = game.run()
-    if winner == "Draw":
-        print( '\n' , "Match tied")
-    if winner is not None:
-        print( '\n', f"{winner} wins")
+    print(f"{winner}")

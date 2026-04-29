@@ -8,6 +8,7 @@ import numpy as np
 orig_path = sys.path[0]
 sys.path[0] += ('/..')
 from game import Game
+from Fonts import get_font
 sys.path[0] = orig_path
 
 #Dimensions
@@ -32,8 +33,6 @@ class Othello(Game):
         self.gameboard=pg.transform.scale(self.gameboard,(board_dim,board_dim))
         self.board1=self.gameboard.get_rect()
         self.board1.topleft=origin
-        self.med_font = pg.font.Font(None,36)
-        self.big_font = pg.font.Font(None,70)
         self.board[3][3]=1
         self.board[3][4]=2
         self.board[4][3]=2
@@ -102,7 +101,7 @@ class Othello(Game):
             elif white_count>black_count:
                 return self.player2
             else:
-                return "Tie"
+                return "Draw"
         return None
 
     def has_any_valid_move(self, player):
@@ -126,15 +125,12 @@ class Othello(Game):
     def counter(self):
         black = np.count_nonzero(self.board == 1)
         white = np.count_nonzero(self.board == 2)
-        font=pg.font.Font(None,36)
         pg.draw.circle(self.screen,(255,255,255),(80,200),40)
         pg.draw.circle(self.screen,(0,0,0),(1030,200),40)
-        text_black = font.render(str(black), True, (0,0,0))
-        text_white = font.render(str(white), True, (255,255,255))
+        text_black = get_font(36).render(str(black), True, (0,0,0))
+        text_white = get_font(36).render(str(white), True, (255,255,255))
         self.screen.blit(text_black, (80 - text_black.get_width()//2, 200 - text_black.get_height()//2))
         self.screen.blit(text_white, (1030 - text_white.get_width()//2, 200 - text_white.get_height()//2))
-        # score_text = font.render(f"{self.player1}: {black}  |  {self.player2}: {white}", True, (255,255,255))
-        # self.screen.blit(score_text, (20, 20))
     def reset(self): #to reset the board on R key
         self.player=1
         self.game_over=False
@@ -179,19 +175,17 @@ class Othello(Game):
             self.mark()
             self.draw_hover()
             self.counter()
-            font=self.med_font
             for row in range(rows):
                for col in range(cols):
                     if self.valid_move(self.player,row,col):
                         pg.draw.circle(self.screen,self.player==1 and (255,255,255) or (0,0,0),(origin[0]+col*sq_dim+sq_dim//2 + 3,origin[1]+row*sq_dim+sq_dim//2),sq_dim//2-5,3)
             if self.game_over:
                 winner = self.check_win()
-                font=self.big_font
 
                 if winner == "Tie":
-                    text = font.render("It's a Tie!", True, (255,255,255))
+                    text = get_font(36).render("It's a Tie!", True, (255,255,255))
                 else:
-                    text = font.render(f"{winner} Wins!", True, (255,255,255))
+                    text = get_font(36).render(f"{winner} Wins!", True, (255,255,255))
                 text_rect=text.get_rect(center=(width//2, 130))
                 self.screen.blit(text, text_rect)
 
@@ -206,4 +200,4 @@ if __name__=="__main__":
     player2 = sys.argv[2]
     game = Othello(player1, player2)
     winner = game.run()
-    print( '\n', f"{winner} wins")
+    print(f"{winner}")

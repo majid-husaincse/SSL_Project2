@@ -7,6 +7,7 @@ import numpy as np
 orig_path = sys.path[0]
 sys.path[0] += ('/..')
 from game import Game
+from Fonts import get_font
 sys.path[0] = orig_path
 
 #Dimensions
@@ -43,7 +44,6 @@ class Tic_Tac_Toe(Game):
         self.ghost_cross.set_alpha(100)  # Semi-transparent
         self.ghost_circle = self.circle.copy()
         self.ghost_circle.set_alpha(100) # Semi-transparent
-        self.big_font = pg.font.Font(None,70)
     def mark(self): #make cross or circle
         for r in range(rows):
             for c in range(cols):
@@ -145,8 +145,7 @@ class Tic_Tac_Toe(Game):
             self.draw_hover()
             if self.game_over:
                 winner=self.current_player()
-                font=self.big_font
-                text=font.render(f"{winner} Wins!",True,(255,255,255))
+                text=get_font(70).render(f"{winner} Wins!",True,(255,255,255))
                 text_rect=text.get_rect(center=(width//2, 130))
                 self.screen.blit(text, text_rect)
                 pg.display.update()
@@ -161,4 +160,4 @@ if __name__=="__main__":
 
     game = Tic_Tac_Toe(player1, player2)
     winner = game.run()
-    print( '\n', f"{winner} wins")
+    print(f"{winner}")
