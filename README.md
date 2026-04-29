@@ -11,6 +11,8 @@ The games in the hub are:
 
 Run `bash main.sh` for user authentication.
 
-Once both players are authenticated, call game.py with both usernames as command-line arguments.
+Once both players are authenticated, main.sh calls game.py with both usernames as command-line arguments.
 
-Run `python3 game.py <username1> <username2>`
+`python3 game.py <username1> <username2>`
+
+The game window appears and the players can start.
