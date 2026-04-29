@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 pg.init()
 
 height, width = 720, 1280
+screen = pg.display.set_mode((width, height))
 
 def record_result(winner,loser,game_name):
     file_exist_bool = os.path.isfile('history.csv') and os.path.getsize('history.csv') > 0
@@ -20,6 +21,73 @@ def record_result(winner,loser,game_name):
             header = ['Winner','Loser','Date','Game']
             csv_writer.writerow(header)
         csv_writer.writerow([winner,loser,today,game_name])
+def show_sort_options(screen):
+    font1 = pg.font.Font('games/c4_resources/niceFont.ttf', 42)
+    font2 = pg.font.Font('games/c4_resources/niceFont.ttf', 36)
+    font3 = pg.font.Font('games/c4_resources/niceFont.ttf', 28)
+    title = font1.render('Sort Leaderboard by',True,(255,255,255))
+    title_rect = title.get_rect(center=(width/2,200))
+    wins_text = font2.render('Sort By Wins',True,(150,255,150))
+    losses_text = font2.render('Sort By loss',True,(255,150,150))
+    ratio_text = font2.render('Sort By W/D',True,(150,150,255))
+    options_list = [wins_text,losses_text,ratio_text]
+    metric_list = ['wins','losses','ratio']
+    Leaderboard_Background = pg.image.load('games/game_resources/leaderboard_background.png')
+    while True:
+        screen.blit(Leaderboard_Background,(0,0))
+        screen.blit(title,title_rect)
+        mouse_pos = pg.mouse.get_pos()
+        rects=[]
+        for i in range(3):
+            rect = pg.Rect(480,270+90*i,320,60)
+            color = (100,100,180) if rect.collidepoint(mouse_pos) else (60,60,100)
+            pg.draw.rect(screen,color,rect,border_radius = 12)
+            rects.append(rect)
+            screen.blit(options_list[i],options_list[i].get_rect(center = rect.center))
+        pg.display.update()
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                for i in range(3):
+                    if(rects[i].collidepoint(event.pos)):
+                        return_text = font3.render(f"Leaderboard sorted by {metric_list[i]} shown on terminal",True,"#f5e342")
+                        screen.blit(return_text,return_text.get_rect(center = (width/2,550)))
+                        pg.display.update()
+                        pg.time.wait(1000)
+                        return metric_list[i]
+def show_graphs(screen):
+    subprocess.run(["python3","matplot.py"])
+    font = pg.font.Font(None,32)
+    arcade_font = pg.font.Font('games/c4_resources/ArcadeGamer.ttf', 36)
+    top_text = arcade_font.render('STATISTICS',True,(100,255,255))
+    exit_text = font.render("Press any key to continue", True, (255, 155, 155))
+    charts = []
+    if os.path.isfile('charts/bar.png'):
+        bar_chart = pg.image.load('charts/bar.png')
+        bar_chart = pg.transform.smoothscale(bar_chart,(560,570))
+        charts.append(bar_chart)
+    if os.path.isfile('charts/pie.png'):
+        pie_chart = pg.image.load('charts/pie.png')
+        pie_chart = pg.transform.smoothscale(pie_chart,(560,570))
+        charts.append(pie_chart)
+    while True:
+        background = pg.image.load('games/game_resources/charts.png')
+        screen.blit(background,(0,0))
+        screen.blit(exit_text, exit_text.get_rect(center=(640,690)))
+        screen.blit(top_text,top_text.get_rect(center =(640,50)))
+        chart_no = 0
+        for chart in charts:
+            screen.blit(chart,(60 + 630*chart_no,100))
+            chart_no +=1
+        pg.display.update()
+        for event in pg.event.get():
+      #      if event.type == pg.KEYDOWN:
+       #         return
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
 #Defining the base game class
 class Game:
 
@@ -29,6 +97,7 @@ class Game:
 
         self.player = 1 #current player,1 is for player1 and 2 is for player2
         self.game_over = False
+        self.screen = pg.display.set_mode((width,height))
         self.font = pg.font.Font('games/c4_resources/ArcadeGamer.ttf', 36)
         self.small_font = pg.font.Font('games/c4_resources/niceFont.ttf', 28)
         self.nice_font = pg.font.Font('games/c4_resources/niceFont.ttf', 36)
@@ -82,9 +151,9 @@ class Game:
             self.screen.blit(self.turn_text, self.turn_rect) 
 
         player1_text = self.small_font.render(f"{self.player1}", True, (255,0,0))
-        self.screen.blit(player1_text, (100,70))
+        self.screen.blit(player1_text, (center:=(80,70)))
         player2_text = self.small_font.render(f"{self.player2}", True, (255,255,0))
-        self.screen.blit(player2_text, (1070, 70))
+        self.screen.blit(player2_text, (center:=(1080, 70)))
     
     def Resign(self,player):
         self.game_over = True
@@ -118,14 +187,14 @@ class Game:
             winner = self.player2  # one resigned 2 wins
             font = self.nice_font
             text = font.render(f"{winner} wins", True, (255,255,0))
-            self.show_text(text,(640,140))
+            self.show_text(text,(520,670))
             return self.Resign(1)
         if(self.Resign2_rect.collidepoint(mouse_pos)):
             self.game_over = True
             winner = self.player1  # two resigned 1 wins
             font = self.nice_font
             text = font.render(f"{winner} wins", True, (255,0,0))
-            self.show_text(text,(640,140))
+            self.show_text(text,(520,670))
             return self.Resign(2)
         if(self.OfferDraw1_rect.collidepoint(mouse_pos)):
 
@@ -150,7 +219,6 @@ def main():
     player1 = sys.argv[1]
     player2 = sys.argv[2]
 
-    screen = pg.display.set_mode((width, height))
     bg = pg.image.load("games/game_resources/bg.png").convert_alpha()
     bg= pg.transform.scale(bg, (width, height))
     slide1= pg.image.load("games/game_resources/slide1.png").convert_alpha()
@@ -220,6 +288,9 @@ def main():
                     else:
                         loser = player2 if winner == player1 else player1
                     record_result(winner, loser, game_name)
+                    metric = show_sort_options(screen)
+                    subprocess.run(["bash","leaderboard.sh",metric])
+                    show_graphs(screen)
         frames+=1
         time = 20
         if frames<time:
