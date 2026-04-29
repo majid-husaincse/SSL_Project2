@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 TEX = pdflatex
 DOC = Report
 IMAGES = othello.png main_menu.png leaderboard.png stats.png
@@ -15,10 +14,3 @@ $(DOC).pdf: $(DOC).tex $(IMAGES)
 
 clean:
 	rm -f *.aux *.log *.pdf *.out
-=======
-Report.pdf: Report.tex
-	pdflatex Report
-.PHONY: clean
-clean: 
-	rm *.aux *.toc *.out *.log
->>>>>>> main

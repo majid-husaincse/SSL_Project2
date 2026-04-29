@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.2)  30 APR 2026 00:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.2)  30 APR 2026 00:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -381,24 +381,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (./Report.aux)
 \openout1 = `Report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -458,7 +458,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 42.
+Package hyperref Info: Link coloring OFF on input line 43.
  (./Report.out) (./Report.out)
 \@outlinefile=\write3
 \openout3 = `Report.out'.
@@ -471,52 +471,52 @@ Package hyperref Info: Link coloring OFF on input line 42.
  [1
 
 {/usr/local/texlive/2026basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (7.72343pt too wide) in paragraph at lines 50--51
+Overfull \hbox (7.72343pt too wide) in paragraph at lines 51--52
 \OT1/cmr/bx/n/12 FunGrid \OT1/cmr/m/n/12 is a com-pre-hen-sive lo-cal two-playe
 r desk-top gam-ing hub de-vel-oped us-ing \OT1/cmr/bx/n/12 Python
  []
 
 [2]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 112.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 113.
 LaTeX Font Info:    Trying to load font information for OMS+cmtt on input line 
-116.
-LaTeX Font Info:    No file OMScmtt.fd. on input line 116.
+117.
+LaTeX Font Info:    No file OMScmtt.fd. on input line 117.
 
 
 LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbackslash' on input line 116.
+(Font)              for symbol `textbackslash' on input line 117.
 
 <main_menu.png, id=120, 1280.785pt x 719.68875pt>
 File: main_menu.png Graphic file (type png)
 <use main_menu.png>
-Package pdftex.def Info: main_menu.png  used on input line 137.
+Package pdftex.def Info: main_menu.png  used on input line 138.
 (pdftex.def)             Requested size: 452.9679pt x 254.51942pt.
 [3] (/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 )
 [4 <./main_menu.png>]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 186.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 187.
 <leaderboard.png, id=159, 1279.78125pt x 716.6775pt>
 File: leaderboard.png Graphic file (type png)
 <use leaderboard.png>
-Package pdftex.def Info: leaderboard.png  used on input line 200.
+Package pdftex.def Info: leaderboard.png  used on input line 201.
 (pdftex.def)             Requested size: 452.9679pt x 253.66228pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 249--252
+Underfull \hbox (badness 10000) in paragraph at lines 250--253
 
  []
 
 <stats.png, id=173, 1280.785pt x 719.68875pt>
 File: stats.png Graphic file (type png)
 <use stats.png>
-Package pdftex.def Info: stats.png  used on input line 255.
+Package pdftex.def Info: stats.png  used on input line 256.
 (pdftex.def)             Requested size: 339.72592pt x 190.89232pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
@@ -525,7 +525,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 <othello.png, id=191, 1282.7925pt x 725.71124pt>
 File: othello.png Graphic file (type png)
 <use othello.png>
-Package pdftex.def Info: othello.png  used on input line 296.
+Package pdftex.def Info: othello.png  used on input line 297.
 (pdftex.def)             Requested size: 339.72592pt x 192.19075pt.
 
 
@@ -533,18 +533,18 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 302.
+(hyperref)                removing `math shift' on input line 303.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\times' on input line 302.
+(hyperref)                removing `\times' on input line 303.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 302.
+(hyperref)                removing `math shift' on input line 303.
 
 [7 <./stats.png>] [8 <./othello.png>] [9] [10]
-Overfull \hbox (12.69452pt too wide) in paragraph at lines 410--412
+Overfull \hbox (12.69452pt too wide) in paragraph at lines 411--413
 []\OT1/cmr/m/n/12 ] Mat-plotlib of-fi-cial doc-u-men-ta-tion. URL: []$\OT1/cmtt
 /m/n/12 https : / / matplotlib . org / stable / users /
  []
