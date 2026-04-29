@@ -1,163 +1,420 @@
 \documentclass[12pt]{article}
-\usepackage{graphicx,xcolor}
-\usepackage[hidelinks]{hyperref}
-\usepackage[margin=0.8in]{geometry}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{dirtree}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
 \usepackage{listings}
+\usepackage{xcolor}
+
+% Code snippet styling
 \lstset{
-    basicstyle=\ttfamily,
-    columns=fullflexible,
-    frame=none
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    language=bash,
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{gray!60},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{orange}
 }
 
-\vspace{3cm}
+% Python specific style for listings
+\lstdefinestyle{pythonstyle}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue!80!black},
+    stringstyle=\color{green!50!black},
+    commentstyle=\color{gray},
+    numbers=left,
+    numberstyle=\tiny\color{gray!60},
+}
 
-\title{\textbf{SSL REPORT} \\ \Large Mini Game Hub}
-\author{Majid Husain \\ Vedansh Garg}
-\date{} % rm -F date
+\title{CS-108 Project: Mini Game Hub}
+\author{Vedansh Garg and Majid Husain}
+\date{April 2026}
+
 \begin{document}
 
 \maketitle
-
-\vspace{1cm}
 
 \tableofcontents
 \newpage
 
 \section{Introduction}
-This is the Spring (2026) semester project for the course SSL (Software and Systems Lab).
+\textbf{FunGrid} is a comprehensive local two-player desktop gaming hub developed using \textbf{Python} and the \textbf{Pygame} library. The platform provides a centralized interface featuring a unified launcher and a suite of administrative tools for player engagement.
 
-\begin{itemize}
-    \item The project integrates Bash for user authentication and Python (Pygame) for GUI gameplay.
-    \item Players log in and their login information is stored securely with encryption.
-    \item The games in the hub are:
-    \begin{enumerate}
-        \item TicTacToe
-        \item Othello
-        \item Connect4
-        \item TBD
-    \end{enumerate}
-    \item At the end of the game, the result is stored and a leaderboard is displayed with visual representations using Matplotlib.
-
-    \item The players are then prompted with an option to play another game or quit.
+The hub bundles classic strategy games:
+\begin{itemize}[label=\textbullet]
+    \item \textbf{Tic-Tac-Toe:} Played on an expanded $10 \times 10$ grid.
+    \item \textbf{Connect 4:} Featured on a custom $7 \times 7$ vertical board.
+    \item \textbf{Othello (Reversi):} Implemented on a standard $8 \times 8$ board.
 \end{itemize}
 
-\section{Running Instructions}
+\section{Modules \& External Libraries}
+The project leverages several libraries to handle different aspects of the gaming environment:
 \begin{itemize}
-    \item The bash script is run using:
-    \begin{verbatim}
-    bash main.sh
-    \end{verbatim}
-
-    \item It prompts the users to input usernames along with their passwords.
-
-    \item If a user is not registered, the script prompts to register a new username with a password.
-
-    \item If both players successfully log in, the script internally calls:
-    \begin{verbatim}
-    python3 game.py <player1> <player2>
-    \end{verbatim}
-
-    \item The game hub then starts, and the players may choose any game from the menu.
+    \item \textbf{pygame}: Primary engine for GUI, input events, and animations.
+    \item \textbf{numpy}: Numerical operations for board states and win-condition logic.
+    \item \textbf{matplotlib}: Environment for generating statistical charts of game performance.
+    \item \textbf{subprocess}: Launches external Python scripts and shell commands.
+    \item \textbf{csv}: Manages match history persistence and file system verification.
+    \item \textbf{os}: Manages directory paths
+    \item \textbf{sys}: Used to pass arguments and also exit the system.
 \end{itemize}
-
-\section{Modules Used}
-
-\subsection{NumPy}
-\href{https://www.geeksforgeeks.org/numpy/python-numpy/}{\color{blue}NumPy} is a Python library used for fast and efficient numerical computations and array operations. \\
-It is used to represent the game boards and perform win-condition checks.
-
-\subsection{Matplotlib}
-\href{https://www.geeksforgeeks.org/python/python-introduction-matplotlib/}{\color{blue}Matplotlib} is a Python library used for creating plots and visualizations. \\
-It is used to display graphs and charts of player stats after the game ends.
-
-\subsection{datetime}
-\href{https://www.geeksforgeeks.org/python/python-datetime-module/}{\color{blue}datetime} is a Python module used for handling date and time-related operations. \\
-It is used for in-game timings and adding game dates to \texttt{history.csv}.
-
-\subsection{Pygame-CE}
-\href{https://pygame-gui.readthedocs.io/en/latest/quick_start.html}{\color{blue}Pygame-CE} is a library used for building graphical user interfaces (GUI) and games. \\
-It is used to implement the GUI and player interactions within the game.
-
-\subsection{sys}
-The \href{https://www.geeksforgeeks.org/python/python-sys-module/}{\color{blue}sys module} provides access to command-line arguments and system-specific parameters. \\
-It is used to read player usernames passed as arguments from \texttt{main.sh} to \texttt{game.py}.
-
-
 
 \section{Directory Structure}
 
-\begin{lstlisting}
-project-root/
-    Report/
-        Report.tex
-        Makefile
-    hub/
-        main.sh
-        game.py
-        leaderboard.sh
-        games/
-            tictactoe.py
-            othello.py
-            connect4.py
-        users.tsv
-        history.csv
-\end{lstlisting}
+\dirtree{%
+.1 hub/.
+.2 main.sh.
+.2 users.tsv.
+.2 game.py.
+.2 games/.
+.3 connect4.py.
+.3 tictactoe.py.
+.3 othello.py.
+.3 game\_resources/.
+.3 c4\_resources/.
+.3 ttt\_resources/.
+.3 othello\_resources/.
+.2 leaderboard.sh.
+.2 history.csv.
+.2 matplot.py.
+}
 
-
-
-\section{File descriptions}
-
-\subsection{bash files}
-
-\subsubsection{main.sh}
-
-The bash script which has to be called to start the game hub
-\begin{verbatim}
-    bash main.sh
-\end{verbatim}
-The script prompts to log in two players with their usernames and passwords while doing necessary checks. If the login is successful, the script calls \texttt{game.py} with player usernames as command line arguments.
-\begin{verbatim}
-    python3 game.py <player1> <player2>
-\end{verbatim}
-
-\subsubsection{leaderboard.sh}
-On completion of the game, \texttt{game.py} calls \texttt{leaderboard.sh}. The script reads data from \texttt{history.csv} and prints player stats for each game as formatted tables.
-
-\subsection{python files}
-\subsubsection{game.py}
-\texttt{game.py} is the main Python file which reads player names passed by \texttt{main.sh} and manages the Python-side flow. The game menu, gameplay, post-game recording, and analytics are all managed by \texttt{game.py}.
-The base class \textbf{Game} is also defined in this file.
-
-
-\subsubsection{Games}
 
 \begin{itemize}
-    \item \texttt{tictactoe.py}
+        \item \texttt{main.sh}: Entry point: authentication shell script
+        \item \texttt{users.tsv}: User registry (hashed passwords)
 
-    The class TicTacToe and the run function is defined here. \texttt{game.py} calls \texttt{tictactoe.py} if the user selects it from the GUI. The run function returns the winner.
+        \item \texttt{game.py}: Pygame launcher + base Game class
+        \item \texttt{games/}: Folder for programs and media of the three games.
+        \item \texttt{leaderboard.sh}: Bash leaderboard printer
+        \item \texttt{history.csv}: Persistent match history
+        \item \texttt{matplot.py}: Matplotlib chart generator
+        \item The different \texttt{resources} folders contain the images and fonts used for that game.
+    \end{itemize}
+\section{Running Instructions}
+\begin{enumerate}
+    \item Install libraries: \texttt{pip install pygame numpy matplotlib}.
+    \item Run \texttt{bash main.sh} to start the hub.
+    \item Enter credentials for both players and select a game.
+\end{enumerate}
 
-    \item \texttt{othello.py}
+\section{Features Implemented}
 
-    The class Othello and the run function is defined here. \texttt{game.py} calls \texttt{othello.py} if the user selects it from the GUI. The run function returns the winner.
+\subsection{Authentication System (\texttt{main.sh})}
+The entry point of the application is a secure Bash-based authentication system ensuring restricted access.
 
-    \item \texttt{connect4.py}
+\subsubsection*{User Registration}
+New usernames are validated against the regex \texttt{\^{}[a-zA-Z0-9\_]+\$}. Passwords must meet specific requirements (Length, Caps, Digits). Credentials are stored in \texttt{users.tsv} as \texttt{username\textbackslash t<sha256\_hash>}.
 
-    The class Connect4 and the run function is defined here. \texttt{game.py} calls \texttt{connect4.py} if the user selects it from the GUI. The run function returns the winner.
-\end{itemize}
+\subsubsection*{Login and Password Management}
+On login, the entered password is processed via \texttt{sha256sum}. The \texttt{change\_password()} function allows users to update their credentials after verifying the current password using \texttt{sed}.
 
-\subsection{Data files}
-    \subsubsection{users.tsv}
-    A tab-separated file where each line stores the username of a registered player along with the password, stored not as plain text but hashed with SHA-256.
+\begin{center}
+Listing 1: SHA-256 hashing implementation
+\end{center}
+\begin{lstlisting}
+pass_hash=$(echo -n "$Pass1" | sha256sum | awk '{print $1}')
+\end{lstlisting}
 
-    \subsubsection{history.csv}
-    A comma-separated file that stores the winner, loser, date, and game name as a new row after each game ends.
-    This data is then read by \texttt{leaderboard.sh} to print formatted tables of player stats.
+The script enforces $\text{Player1} \neq \text{Player2}$ to prevent self-play.
 
-    \subsection{Report}
+\subsection{Pygame Launcher (\texttt{game.py})}
+The launcher manages the slide-show intro and game module dispatching.
 
-    \subsubsection{Report.tex}
-    This \texttt{.tex} document contains the detailed report explaining the project. It is compiled into a PDF.
+\subsubsection*{Animated Home Screen}
+The launcher cycles through backgrounds over the first few seconds. Clickable game logos inflate on hover using \texttt{pg.transform.smoothscale}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{main_menu.png}
+    \caption{Home Screen}
+    \label{fig:my_image}
+\end{figure}
+\subsubsection*{Game Dispatch}
+Each logo click spawns its corresponding Python module as a subprocess:
+\begin{center}
+Listing 2: Subprocess dispatch in \texttt{game.py}
+\end{center}
+\begin{lstlisting}[style=pythonstyle]
+result = subprocess.run(
+    ["python3", "games/tictactoe.py", player1, player2],
+    capture_output=True, text=True
+)
+winner = result.stdout.splitlines()[-1]
+\end{lstlisting}
 
-    \subsubsection{makefile}
-    In the same folder as \texttt{Report.tex}, there is the makefile used to compile it into a PDF.
+The last line of the subprocess output is the winner name.
+
+\subsubsection*{Result Recording}
+Match results are appended to the CSV history file via the \texttt{record\_result} function.
+\begin{center}
+Listing 3: Appending result to \texttt{history.csv}
+\end{center}
+\begin{lstlisting}[style=pythonstyle]
+def record_result(winner, loser, game_name):
+    today = date.today()
+    with open('history.csv', 'a', newline="") as file:
+        csv_writer = csv.writer(file)
+        csv_writer.writerow([winner, loser, today, game_name])
+\end{lstlisting}
+\subsection{Base Game Class (\texttt{Game})}
+All three game modules extend the abstract \texttt{Game} class defined in \texttt{game.py} to eliminate code duplication.
+
+\subsubsection*{Key Attributes}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Attribute} & \textbf{Purpose} \\ \midrule
+\texttt{player1 / player2} & Authenticated player names \\
+\texttt{player} & Current turn (1 or 2) \\
+\texttt{game\_over} & Boolean game-end flag \\
+\texttt{board} & NumPy integer array \\
+ \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection*{Shared Methods}
+\begin{description}
+    \item[\texttt{switch\_turn()}]  Toggles \texttt{self.player} between 1 and 2 using the identity $3 - p$.
+    \item[\texttt{game\_board(rows, cols)}]  Creates a zeroed NumPy array of the given shape.
+    \item[\texttt{board\_full()}] Returns \texttt{True} when no zero remains in the board array.
+    \item[\texttt{current\_player()}] Returns the \texttt{Current Player} who has the turn.
+    \item[\texttt{Resign(player)}] Sets \texttt{game\_over} and returns the opposing player's name.
+    \item[\texttt{check\_win()}] It is implemented by the subclass in each game.
+\end{description}
+
+\subsection{Leaderboard (\texttt{leaderboard.sh})}
+The leaderboard is generated purely using Bash script from \texttt{history.csv}.
+The script reads \texttt{history.csv} and prints a formatted table to the terminal showing, per game, per user: number of wins, number of losses, and Win/Loss ratio, sorted by one of these metrics. The GUI allows the user to choose which metric they want the leaderboard sorted by, and pass this to leaderboard.sh.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{leaderboard.png}
+    \caption{Sort Leaderboard By}
+    \label{fig:leaderboard}
+\end{figure}
+
+It groups statistics by game and supports three sort metrics:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Metric} & \textbf{Field} & \textbf{Order} \\ \midrule
+wins & Column 2 & Descending \\
+losses & Column 3 & Descending \\
+ratio & Column 4 (W/L) & Descending \\ \bottomrule
+\end{tabular}
+\end{center}
+
+The W/L ratio is computed with \texttt{awk}; division by zero yields the string \texttt{INF} which sorts first under the \texttt{-g} (general numeric) flag of \texttt{sort}.
+
+\begin{center}
+Listing 4: Ratio computation and INF handling
+\end{center}
+\begin{lstlisting}
+if [ "$LOSSES" -eq 0 ]; then
+    RATIO="INF"
+else
+    RATIO=$(awk "BEGIN {printf \"%.2f\", $WINS/$LOSSES}")
+fi
+\end{lstlisting}
+
+\subsection{Statistics Charts (\texttt{matplot.py})}
+Two charts are generated after every completed match and displayed inside the Pygame window to visualize performance.
+
+\subsubsection*{Bar Chart -- Top 5 Players by Wins}
+\begin{center}
+Listing 5: Generating the bar chart
+\end{center}
+\begin{lstlisting}[style=pythonstyle]
+plt.style.use('dark_background')
+plt.bar(top_five_players_names, top_five_players_wins,
+        color=['b','b','b','b','b'])
+plt.xlabel('Top players')
+plt.ylabel('Wins')
+plt.title('Our Top performers')
+plt.savefig('charts/bar.png', dpi=300,
+            bbox_inches='tight', transparent=True)
+\end{lstlisting}
+
+\subsubsection*{Pie Chart -- Game Popularity}
+The pie chart shows the proportion of total games played across Tic-Tac-Toe, Connect 4, and Othello.
+\\ \\
+The statistics displayed are as follows:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{stats.png}
+    \caption{Statistics}
+    \label{fig:stats}
+\end{figure}
+
+\subsection{Data Storage}
+The hub utilizes a flat-file storage system for lightweight and portable data management.
+
+\subsubsection*{\texttt{history.csv}}
+Maintains a chronological log of all matches played. For draws, both the Winner and Loser fields are recorded as "Draw".
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Winner} & \textbf{Loser} & \textbf{Date} & \textbf{Game} \\ \midrule
+Alice & Bob & 2025-01-10 & TicTacToe \\
+Bob & Alice & 2025-01-10 & Connect4 \\
+Draw & Draw & 2025-01-11 & Othello \\ \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection*{\texttt{users.tsv}}
+Each line stores \texttt{username\textbackslash t<sha256-hex>}.
+
+\subsection{In-Game UI Controls}
+All three games inherit a standardized control layout from the \texttt{Game} base class to ensure backend consistency.
+
+\begin{center}
+\begin{tabular}{lp{9cm}}
+\toprule
+\textbf{Control} & \textbf{Action} \\ \midrule
+\textbf{RESIGN (P1 / P2)} & Immediately concedes; opponent wins. \\
+\textbf{DRAW (P1 / P2)} & Sends a draw offer; opponent must press Y to accept or N to decline. \\
+\textbf{R key} & Resets the board (mid-game restart). \\
+
+\textbf{Click on board} & Places a piece / makes a move. \\
+\textbf{Hover on board} & Shows the possible moves \\\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{othello.png}
+    \caption{Gameboard for \texttt{othello.py} with different controls}
+    \label{fig:game}
+\end{figure}
+
+\section{Game Modules}
+\subsection{$10 \times 10$ Tic-Tac-Toe (\texttt{tictactoe.py})}
+This module implements an expanded version of the classic strategy game.
+
+\subsubsection*{Board \& Rules}
+The board is a $10 \times 10$ grid; a player wins by connecting \textbf{5 pieces} in a row (horizontally, vertically, or diagonally). Player 1 uses a \textit{cross} image blit, while Player 2 uses a \textit{circle}.
+
+\subsubsection*{Win Detection}
+Win checking is performed only along the row, column, and diagonals containing the last-placed piece, achieving $O(n)$ detection efficiency.
+
+\begin{center}
+Listing 4: Sliding-window win check for a row
+\end{center}
+\begin{lstlisting}[style=pythonstyle]
+Win = np.ones(5, dtype=int) * player
+Row_Subsets = np.lib.stride_tricks.sliding_window_view(Row,
+              window_shape=5)
+bool_row = True in np.all(Row_Subsets == Win, axis=1)
+\end{lstlisting}
+
+\subsubsection*{UX Features}
+The game includes semi-transparent ghost piece previews and an 'R' key to restart the board at any time.
+
+\subsection{Connect 4 (\texttt{connect4.py})}
+The Connect 4 module implements a vertical strategy game with simulated gravity.
+
+\subsubsection*{Board \& Rules}
+The game is played on a $7 \times 7$ grid where tokens fall to the lowest empty row in the chosen column. A player wins by connecting 4 tokens horizontally, vertically, or diagonally. Player 1 utilizes red tokens, while Player 2 utilizes yellow tokens.
+
+\subsubsection*{Gravity \& Drop Logic}
+The gravity mechanism is implemented by scanning a column from the bottom up to find the first available zero-value entry in the NumPy array.
+
+\begin{center}
+Listing 5: Finding the lowest empty row in a column
+\end{center}
+\begin{lstlisting}[style=pythonstyle]
+def find_row(self, col):
+    for i in np.arange(self.ROWS - 1, -1, -1):
+        if self.board[i][col] == 0:
+            return i
+    return None
+\end{lstlisting}
+
+\subsubsection*{Ghost Piece}
+To improve user experience, a semi-transparent token is rendered at the lowest available row in the hovered column, providing visual feedback before a move is committed.
+
+\subsection{Othello (\texttt{othello.py})}
+The Othello (Reversi) module features complex move validation and tile-flipping logic.
+
+\subsubsection*{Board \& Rules}
+Played on a standard $8 \times 8$ board, the game starts with two pieces of each color in the center. A move is legal only if it flanks at least one opponent piece in any of the eight directions; all flanked pieces are then flipped to the current player's color.
+
+\subsubsection*{Move Validation}
+Validation checks are performed across all directions (horizontal, vertical, and diagonal) starting from the target cell.
+
+\begin{center}
+Listing 6: valid\_move checks all 8 directions
+\end{center}
+\begin{lstlisting}[style=pythonstyle]
+directions = [(-1,-1),(-1,0),(-1,1),(0,-1),
+              (0,1),(1,-1),(1,0),(1,1)]
+for dr, dc in directions:
+    r, c = row+dr, col+dc
+    has_opponent_between = False
+    while 0 <= r < rows and 0 <= c < cols:
+        if self.board[r][c] == opponent:
+            has_opponent_between = True
+        elif self.board[r][c] == player and has_opponent_between:
+            return True
+        else:
+            break
+        r += dr; c += dc
+\end{lstlisting}
+
+\subsubsection*{Pass-Turn \& End Detection}
+The turn is automatically passed if the active player has no legal moves. If neither player can move, \texttt{game\_over} is triggered, and the winner is determined by the final piece count.
+
+\subsubsection*{Live Counter}
+Circular indicators on the UI show real-time piece counts for both players during gameplay.
+
+\section{Project Journey}
+\subsection{Challenges faced}
+\begin{enumerate}
+    \item \textbf{Linking games to game.py} - Initially we had no clue how to link games with each other. Later We made subprocesses and initialised the parent class into the child classes.
+    \item \textbf{Making generalised functions for different games} - Although all three of them are board games the conditions were different and we tried our best to keep as many functions same as possible by defining them in \texttt{}{game.py}
+    \item \textbf{Using Numpy for checking win conditions}  - The problem statement rejected the use of for loop in checking winning conditions so we used numpy functions like sliding window to check the win conditions in the games which is faster than the for loop.
+    \item \textbf{Index out of bounds error on board} - Initially there was an error that said index out of bounds when I clicked on the corner of the board as there was an error in the inequality for mouse position. Took some time to rectify it.
+    \item \textbf{Git merge} - We made two branches \texttt{majid} and \texttt{dev}. If there were too many changes it was very tiresome resolving the merge conflicts.
+\end{enumerate}
+\subsection{If we had 10 more hours}
+
+\begin{enumerate}
+    \item \textbf{Fixed resolution} – The application window is hard-coded to $1280 \times 720$ with no support for dynamic resizing or full-screen modes.
+    \item \textbf{Warning window for resign} - Add a warning window when a player clicks Resign to confirm.
+
+    \item \textbf{Better directory structure} - Sort all the resources into one folder and appropriate sub folders.
+    \item \textbf{Leaderboard formatting} - Add colours and fonts for better formatting in terminal.
+    \item \textbf{Add game instructions} - Add a window containing the game instructions for different games in \texttt{How to Play}
+\end{enumerate}
+
+
+\section{Bibliography}
+\begin{enumerate}
+    \item[[1]] Numpy official documentation. URL: \url{https://numpy.org/doc/}.
+    \item[[2]] Pygame CE official documentation. URL: \url{https://pyga.me/}.
+    \item[[3]] BodhiTree documentations and slides. URL: \url{https://robin.bodhi.cse.iitb.ac.in/}.
+    \item[[4]] Python inheritance. URL: \url{https://docs.python.org/3/tutorial/classes.html}.
+    \item[[5]] Sample modular project. URL: \url{http://github.com/rennaMAhcuS/Maze}.
+    \item[[6]] W3 schools. URL: \url{https://www.w3schools.com/}.
+    \item[[7]] Matplotlib official documentation. URL:
+    \url{https://matplotlib.org/stable/users/index.html}
+    \item[[8]] Reference for report writing. URL:
+\url{https://github.com/rennaMAhcuS/Maze/blob/main/report/report.pdf}
+    \item[[9]] SHA-256 in Bash: \texttt{man sha256sum / man openssl dgst}
+    \item[[10]] Canva for background images: URL:
+    \url{https://www.canva.in/}
+
+\end{enumerate}
+
 \end{document}
