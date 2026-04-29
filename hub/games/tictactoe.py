@@ -55,13 +55,13 @@ class Tic_Tac_Toe(Game):
                 elif self.board[r][c]==2:
                     self.screen.blit(self.circle, (x , y ))
 
-    def draw(self):
+    def draw(self): # for drawing the board and pieces on the screen
         self.make_board(self.bg,self.tttboard, origin[0], origin[1]  )
         self.mark()
         self.draw_hover()
         pg.display.update()
 
-    def draw_hover(self):
+    def draw_hover(self): # to show ghost piece on hover based on the current player and mouse position
         if self.game_over:
             return
         mX,mY=pg.mouse.get_pos()
@@ -121,43 +121,50 @@ class Tic_Tac_Toe(Game):
                 if event.type==pg.QUIT:
                     pg.quit()
                     sys.exit()
+                if event.type==pg.KEYDOWN:
+                    if event.key==pg.K_r: #Press R to restart
+                        self.reset()
+
                 if event.type==pg.MOUSEBUTTONDOWN:
-                    sound = self.cross_sound if self.player == 1 else self.circle_sound
-                    sound.play(loops=0) # to play sound on click
+                     #  sound = self.cross_sound if self.player == 1 else self.circle_sound
+                   # sound.play(loops=0) # to play sound on click but currently not working on lab systems so commented out
                     mX,mY=event.pos
-                    result = self.check_buttons_press((mX,mY))
+                    result = self.check_buttons_press((mX,mY)) # to check if any button was pressed and return the result of the button press action
                     if result is not None:
                         return result
-                    if origin[0]<=mX<=origin[0]+board_dim and origin[1]<=mY<=origin[1]+board_dim and not self.game_over:
+                    if origin[0]<=mX<=origin[0]+board_dim and origin[1]<=mY<=origin[1]+board_dim and not self.game_over: # check if click is inside the board and game is not already over
                         r,c=(mY-origin[1])//sq_dim,(mX-origin[0])//sq_dim
                         if self.board[r][c]==0:
                             self.board[r][c]=self.player
                             if self.check_win(self.player,c,r):
                                 self.game_over=True
+                            elif self.board_full(): #check for tie
+                                self.game_over=True
+                                self.player=0
                             else:
                                 self.switch_turn()
-                if event.type==pg.KEYDOWN:
-                    if event.key==pg.K_r: #Press R to restart
-                        self.reset()
-            self.screen.blit(self.bg, (0, 0))
-            self.make_board(self.bg,self.tttboard, origin[0], origin[1]  )
-            self.mark()
-            self.draw_hover()
+            self.screen.blit(self.bg, (0, 0)) # to draw the background and board every frame
+            self.make_board(self.bg,self.tttboard, origin[0], origin[1]) # to draw the background and board every frame 
+            self.mark() # to draw the pieces on the board based on the current state 
+            self.draw_hover() # to draw the ghost piece based on the current mouse position and player
             if self.game_over:
+                
                 winner=self.current_player()
-                text=get_font(70).render(f"{winner} Wins!",True,(255,255,255))
-                text_rect=text.get_rect(center=(width//2, 130))
-                self.screen.blit(text, text_rect)
+
+                if winner == "Draw":
+                    text = get_font(36,'Nice').render("Match tied", True, (255,255,255))
+                else:
+                    text=get_font(36,'Nice').render(f"{winner} Wins!",True,(255,0,0) if self.player == 1 else (255,255,0))
+                self.show_text(text,(520,670))
                 pg.display.update()
-                pg.time.wait(3000)
+                pg.time.wait(1000)
                 return winner
             pg.display.update()
             clock.tick(60)
 
-if __name__=="__main__":
-    player1 = sys.argv[1]
+if __name__=="__main__": # to run the game by creating an instance of the Othello class with player names and calling the run method, it also prints the winner in the console after the game ends.
+    player1 = sys.argv[1] # to get player names from command line arguments
     player2 = sys.argv[2]
-
-    game = Tic_Tac_Toe(player1, player2)
-    winner = game.run()
-    print(f"{winner}")
+    game = Tic_Tac_Toe(player1, player2) # to create an instance of the Tic_Tac_Toe class with player names
+    winner = game.run() # to run the game and get the winner 
+    print(f"{winner}")  

@@ -6,7 +6,6 @@ import pygame as pg
 #importing parent class
 orig_path = sys.path[0]
 sys.path[0] += ('/..')
-from Fonts import get_font
 from game import Game
 sys.path[0] = orig_path
 
@@ -21,7 +20,7 @@ origin = [370,160]
 #Game defining class
 class Connect4(Game):
 
-    def __init__(self, player1, player2):
+    def __init__(self, player1, player2): # constructor to initialize the game state, load images, and set up the board dimensions 
         super().__init__(player1, player2)
         pg.init()
         #Board-Size:
@@ -38,10 +37,11 @@ class Connect4(Game):
         self.yellow = pg.transform.scale(self.yellow, circles_size)
         self.red_transparent = self.red.copy()
         self.red_transparent.set_alpha(100) 
-        self.yellow_transparent = self.yellow.copy()
+        self.yellow_transparent = self.yellow.copy() # transparent version of yellow piece for hover effect
         self.yellow_transparent.set_alpha(100)
 
-    def find_row(self, col):
+    def find_row(self, col): # to find the lowest empty row in the specified column where a piece can be dropped, it iterates from the bottom row upwards and checks for an empty cell (value 0) in the board array 
+        # returning the row index if found or None if the column is full.
         for i in np.arange(self.ROWS-1, -1, -1):
             if self.board[i][col] == 0:
                 return i
@@ -55,7 +55,7 @@ class Connect4(Game):
                 return i
         return None
     
-    def mark(self):
+    def mark(self): # to draw the pieces on the board based on the current state of the board array 
         for r in range(self.ROWS):
             for c in range(self.COLS):
                 #red for player1 yellow for player2
@@ -64,7 +64,7 @@ class Connect4(Game):
                 elif self.board[r][c] == 2:
                     self.screen.blit(self.yellow, (board_origin[0]+c*column_size, board_origin[1]+r*row_size-7))
 
-    def draw_hover(self):
+    def draw_hover(self): # to draw a semi-transparent piece (ghost piece) on the board to indicate where the current player's piece would be placed if they click
         mouse_pos = pg.mouse.get_pos()
         #ghost piece
         if self.inside_board(mouse_pos):
@@ -78,9 +78,9 @@ class Connect4(Game):
                             self.screen.blit(self.yellow_transparent, (board_origin[0]+col*column_size, board_origin[1] + row*row_size-7))
         
     def draw(self):
-        self.make_board(self.bg,self.board_photo, origin[0], origin[1]  )
-        self.mark()
-        self.draw_hover()
+        self.make_board(self.bg,self.board_photo, origin[0], origin[1]) # to draw the background and board every frame
+        self.mark() # to draw the pieces on the board based on the current state
+        self.draw_hover() # to draw the ghost piece based on the current mouse position and player
         pg.display.update()
     def check_win(self,player,col,row):
         #win needs to be checked only in the column row or diagonal where last item was placed
@@ -119,7 +119,7 @@ class Connect4(Game):
                 return True
                
         return False
-    def inside_board(self,mouse_pos):
+    def inside_board(self,mouse_pos): # to check if the mouse position is within the boundaries of the game board
         return (board_origin[0] <= mouse_pos[0] < board_origin[0] + self.COLS*column_size) and (board_origin[1] <= mouse_pos[1] < board_origin[1] + self.ROWS*row_size)
     #Main Loop
     def run(self):
@@ -148,7 +148,7 @@ class Connect4(Game):
                     if result is not None:
                         return result
                     
-                    if(self.inside_board(mouse_pos)):
+                    if(self.inside_board(mouse_pos)): # to check if the click is within the board area before processing the move
                         col = (mouse_pos[0] - board_origin[0])// column_size
                         player = self.player
                         row = self.drop(col,player)
@@ -158,7 +158,8 @@ class Connect4(Game):
                                 #if Winner found:
                                 self.draw()
                                 winner = self.current_player() #winner name
-                                text = get_font(36,'Nice').render(f"{winner} wins", True, ((255,0,0) if self.player == 1 else (255,255,0)))
+                                font = pg.font.Font('games/c4_resources/niceFont.ttf', 36)
+                                text = font.render(f"{winner} wins", True, ((255,0,0) if self.player == 1 else (255,255,0)))
 
                                 self.show_text(text,(520,670))
                                 return winner
@@ -170,16 +171,16 @@ class Connect4(Game):
 
                         #Board full but no winner...
                         self.draw()
-                        tie_text = get_font(36,'Nice').render("Match tied", True, (255, 255, 255))
+                        tie_text = self.font.render("Match tied", True, (255, 255, 255))
                         self.show_text(tie_text,(520,670))
-                        return "Draw"
+                        return "Game Drawn"
             self.draw()
             pg.display.update()
             clock.tick(60)
 
-if __name__ == "__main__":
-    player1 = sys.argv[1]
+if __name__ == "__main__": # to run the game by creating an instance of the Connect4 class with player names and calling the run method, it also prints the winner in the console after the game ends.
+    player1 = sys.argv[1] # to get player names from command line arguments
     player2 = sys.argv[2]
-    game = Connect4(player1, player2)
-    winner = game.run()
-    print(f"{winner}")
+    game = Connect4(player1, player2) # to create an instance of the Connect4 class with player names
+    winner = game.run() # to run the game and get the winner
+    print(f"{winner}")  
