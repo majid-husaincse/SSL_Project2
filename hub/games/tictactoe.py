@@ -3,7 +3,7 @@ import os
 import pygame as pg 
 import numpy as np
 
-#importing parent class
+#importing parent class and Fonts
 orig_path = sys.path[0]
 sys.path[0] += ('/..')
 from game import Game
@@ -24,8 +24,8 @@ crosscolor=(50,50,50)
 circlecolor=(240,240,240)
 
 class Tic_Tac_Toe(Game):
-    def __init__(self, player1, player2): #consturctor
-        super().__init__(player1, player2)
+    def __init__(self, player1, player2): #constructor to initialise player names,board,pygame etc
+        super().__init__(player1, player2) #initialise variables from parent class
         pg.init()
         pg.display.set_caption("10x10 Tic-Tac-Toe")
         self.bg=pg.image.load("games/ttt_resources/bg.png")
@@ -44,7 +44,7 @@ class Tic_Tac_Toe(Game):
         self.ghost_cross.set_alpha(100)  # Semi-transparent
         self.ghost_circle = self.circle.copy()
         self.ghost_circle.set_alpha(100) # Semi-transparent
-    def mark(self): #make cross or circle
+    def mark(self): #make piece
         for r in range(rows):
             for c in range(cols):
                 x=origin[0]+c*sq_dim
@@ -55,21 +55,21 @@ class Tic_Tac_Toe(Game):
                 elif self.board[r][c]==2:
                     self.screen.blit(self.circle, (x , y ))
 
-    def draw(self):
+    def draw(self): # draw board and pieces on screen
         self.make_board(self.bg,self.tttboard, origin[0], origin[1]  )
         self.mark()
         self.draw_hover()
         pg.display.update()
 
-    def draw_hover(self):
+    def draw_hover(self): # draw semi transparent ghost piece on hover based on the current player and mouse position
         if self.game_over:
             return
         mX,mY=pg.mouse.get_pos()
-        # Check if mouse is inside the board
+        # Check if mouse is inside board
         if origin[0]<=mX<origin[0]+board_dim and origin[1]<=mY<origin[1]+board_dim:
             c=(mX-origin[0])//sq_dim
             r=(mY-origin[1])//sq_dim   
-            # Only show hover if the cell is empty
+            # Only show hover if cell is empty
             if self.board[r][c] == 0:
                 x=origin[0]+c*sq_dim
                 y=origin[1]+r*sq_dim    
@@ -121,43 +121,50 @@ class Tic_Tac_Toe(Game):
                 if event.type==pg.QUIT:
                     pg.quit()
                     sys.exit()
+                if event.type==pg.KEYDOWN:
+                    if event.key==pg.K_r: #Press R to restart
+                        self.reset()
+
                 if event.type==pg.MOUSEBUTTONDOWN:
-                    sound = self.cross_sound if self.player == 1 else self.circle_sound
-                    sound.play(loops=0) # to play sound on click
+                     #  sound = self.cross_sound if self.player == 1 else self.circle_sound
+                   # sound.play(loops=0) # to play sound on click but currently not working on lab systems so commented out
                     mX,mY=event.pos
                     result = self.check_buttons_press((mX,mY))
                     if result is not None:
                         return result
-                    if origin[0]<=mX<=origin[0]+board_dim and origin[1]<=mY<=origin[1]+board_dim and not self.game_over:
+                    if origin[0]<=mX<=origin[0]+board_dim and origin[1]<=mY<=origin[1]+board_dim and not self.game_over: # check if click is inside board and game is not over
                         r,c=(mY-origin[1])//sq_dim,(mX-origin[0])//sq_dim
                         if self.board[r][c]==0:
                             self.board[r][c]=self.player
                             if self.check_win(self.player,c,r):
                                 self.game_over=True
+                            elif self.board_full(): #check for Draw
+                                self.game_over=True
+                                self.player=0
                             else:
                                 self.switch_turn()
-                if event.type==pg.KEYDOWN:
-                    if event.key==pg.K_r: #Press R to restart
-                        self.reset()
-            self.screen.blit(self.bg, (0, 0))
-            self.make_board(self.bg,self.tttboard, origin[0], origin[1]  )
-            self.mark()
-            self.draw_hover()
+            self.screen.blit(self.bg, (0, 0)) #draw the background and board every frame
+            self.make_board(self.bg,self.tttboard, origin[0], origin[1])
+            self.mark() # draw the pieces on the board based on the current state
+            self.draw_hover() #draws the ghost piece based on the mouse position
             if self.game_over:
+                
                 winner=self.current_player()
-                text=get_font(70).render(f"{winner} Wins!",True,(255,255,255))
-                text_rect=text.get_rect(center=(width//2, 130))
-                self.screen.blit(text, text_rect)
+
+                if winner == "Draw":
+                    text = get_font(36,'Nice').render("Match tied", True, (255,255,255))
+                else:
+                    text=get_font(36,'Nice').render(f"{winner} Wins!",True,(255,0,0) if self.player == 1 else (255,255,0))
+                self.show_text(text,(520,670))
                 pg.display.update()
-                pg.time.wait(3000)
+                pg.time.wait(1000)
                 return winner
             pg.display.update()
             clock.tick(60)
 
 if __name__=="__main__":
-    player1 = sys.argv[1]
+    player1 = sys.argv[1] # to get player names from CLI
     player2 = sys.argv[2]
-
-    game = Tic_Tac_Toe(player1, player2)
-    winner = game.run()
-    print(f"{winner}")
+    game = Tic_Tac_Toe(player1, player2) # to create an instance of the Tic_Tac_Toe class with player names
+    winner = game.run() 
+    print(f"{winner}")  

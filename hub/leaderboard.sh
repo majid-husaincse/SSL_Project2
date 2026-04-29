@@ -1,6 +1,6 @@
 #!/bin/bash
 # Read history.csv and make leaderboard on terminal
-# sort_metric: "wins" | "losses" | "ratio" (default: wins)
+# sort_metric: "wins" | "losses" | "ratio"
 
 clear
 
@@ -9,32 +9,34 @@ if [ ! -f history.csv ]; then
     echo "No history file found."
     exit 0
 fi
-SORT_BY=$1
+SORT_BY=$1 #one arguement taken from CLI
 
-# Skip header, count lines
+# Skip header
 DATA_LINES="tail -n +2 history.csv"
 
+#Header for Leaderboard
 echo -e "\n=============================================="
 echo "           FUNGRID LEADERBOARD                     "
 echo -e "==============================================\n"
 
-# Print per-game per-user stats
+# Print per game per user stats
 # history.csv format: Winner,Loser,Date,Game
-# We loop over each unique game name
+# loop over each game
 
 GAMES=` $DATA_LINES | cut -d',' -f4 | sort -u`
 
 for GAME in $GAMES; do
+    #Leaderboard looks like this
     echo "----------------------------------------------"
     echo "  Game: $GAME"
     echo "----------------------------------------------"
     echo -e "  Player              Wins     Losses     W/L"
     echo "----------------------------------------------"
 
-    # Get all unique players for this game
-    PLAYERS=` $DATA_LINES | grep -v "Draw" | grep -v . | awk -F',' -v game="$GAME" 'BEGIN{ OFS = "\n"} $4==game {print $1,$2}' | sort -u`
+    # Get all players for this game
+    PLAYERS=` $DATA_LINES | grep -v "Draw" | grep -v ^$ | awk -F',' -v game="$GAME" ' $4==game {print $1; print $2}' | sort -u`
 
-    # Build temp data: player wins losses ratio
+    # temp data format: player wins losses ratio
     TEMP_DATA=""
     for PLAYER in $PLAYERS; do
         WINS=` $DATA_LINES | awk -F',' -v p="$PLAYER" -v game="$GAME" '$1==p && $4==game' | wc -l | tr -d ' '`
@@ -50,16 +52,16 @@ for GAME in $GAMES; do
         TEMP_DATA+="$PLAYER,$WINS,$LOSSES,$RATIO\n"
     done
 
-    # Sort the temp data based on sort metric
+    # Sort the temp data based on metric
     SORTED_DATA=""
     if [ "$SORT_BY" = "wins" ]; then
-        # Sort by wins (field 2) descending
+        # Sort by wins descending
         SORTED_DATA=`echo -e "$TEMP_DATA" | sort -t',' -k2 -rg`
     elif [ "$SORT_BY" = "losses" ]; then
-        # Sort by losses (field 3) descending
+        # Sort by losses descending
         SORTED_DATA=`echo -e "$TEMP_DATA" | sort -t',' -k3 -rg`
     elif [ "$SORT_BY" = "ratio" ]; then
-        # Sort by ratio (field 4) descending; put "INF" on top
+        # Sort by ratio descending; (by using -g INF comes on top)
         SORTED_DATA=`echo -e "$TEMP_DATA" | sort -t',' -k4 -rg`
     fi
 

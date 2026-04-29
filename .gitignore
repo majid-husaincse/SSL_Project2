@@ -1,1 +1,4 @@
-projectguide
+__pycache__/
+*.pyc
+*.DS_store
+.vscode/

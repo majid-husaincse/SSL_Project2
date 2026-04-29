@@ -1,3 +1,4 @@
+#called by show_graphs saves plots
 import csv
 import os
 import matplotlib.pyplot as plt
