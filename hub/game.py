@@ -58,7 +58,7 @@ def show_sort_options(screen):
                         pg.time.wait(1000)
                         return metric_list[i]
 def show_graphs(screen):
-    subprocess.run(["python3","matplot.py"])
+    subprocess.run(["python","matplot.py"])
     font = pg.font.Font(None,32)
     arcade_font = pg.font.Font('games/c4_resources/ArcadeGamer.ttf', 36)
     top_text = arcade_font.render('STATISTICS',True,(100,255,255))
@@ -107,7 +107,7 @@ class Game:
         self.turn_text = self.small_font.render(f"Turn: {self.current_player()}", True, (255,255,255))
         self.turn_rect = self.turn_text.get_rect(center=(640, 140))
         self.draw_offered = False
-        
+
         #Resign button
         self.Resign_text = self.font.render("RESIGN",True,(255,100,100))
         #offer-Draw
@@ -121,20 +121,20 @@ class Game:
         self.player = 3 - self.player     # switches between 1 and 2
         self.turn_text = self.small_font.render(f"Turn: {self.current_player()}", True, (255,255,255))
     def current_player(self):
-        return self.player2 if self.player == 2 else self.player1
+        return "Draw" if self.player == 0 else self.player1 if self.player == 1 else self.player2
     def game_board(self,rows,cols):
         self.board = np.zeros((rows,cols), dtype=int)
         return self.board
     def reset(self): #to reset the board on R key
         self.board.fill(0)
-        self.player = 3-self.player
+        self.player = 2  # Switch starting player for next game
         self.game_over=False
     def board_full(self):
         # To check if game is over
         return 0 not in self.board
-    
+
     def make_board(self,background,board_photo,x,y):
-        
+
         self.screen.blit(background, (0,0))
         self.screen.blit(board_photo, (x, y))
         self.screen.blit(self.button,(50,40))
@@ -143,28 +143,28 @@ class Game:
         self.screen.blit(self.button, (1030,300))
         self.screen.blit(self.button, (50,400))
         self.screen.blit(self.button, (1030,400))
-        self.screen.blit(self.OfferDraw_text, (80,430))
-        self.screen.blit(self.OfferDraw_text,(1080,430))
-        self.screen.blit(self.Resign_text, (60,330)) 
-        self.screen.blit(self.Resign_text, (1040,330))
+        self.screen.blit(self.OfferDraw_text, center:=(80,430))
+        self.screen.blit(self.OfferDraw_text,center:=(1080,430))
+        self.screen.blit(self.Resign_text, center:=(60,330))
+        self.screen.blit(self.Resign_text, center:=(1040,330))
         if not self.draw_offered and not self.game_over:
-            self.screen.blit(self.turn_text, self.turn_rect) 
+            self.screen.blit(self.turn_text, self.turn_rect)
 
         player1_text = self.small_font.render(f"{self.player1}", True, (255,0,0))
         self.screen.blit(player1_text, (center:=(80,70)))
         player2_text = self.small_font.render(f"{self.player2}", True, (255,255,0))
         self.screen.blit(player2_text, (center:=(1080, 70)))
-    
+
     def Resign(self,player):
         self.game_over = True
         return self.player1 if player == 2 else self.player2   # other player
     def show_text(self,text,pos):
-        
+
         #show text in GUI
         self.screen.blit(text, pos)
         pg.display.update()
         pg.time.wait(3000)
-        
+
     def Offer_Draw(self,player):
         self.draw_offered = True
         self.draw()
@@ -270,15 +270,15 @@ def main():
                 winner = None    # reset har click pe
                 game_name = None
                 if ttt_rect.collidepoint(mouse_pos):
-                    result = subprocess.run(["python3", "games/tictactoe.py", player1, player2], capture_output=True, text=True)
+                    result = subprocess.run(["python", "games/tictactoe.py", player1, player2], capture_output=True, text=True)
                     winner = result.stdout.splitlines()[-1]
                     game_name = "TicTacToe"
                 elif othello_rect.collidepoint(mouse_pos):
-                    result = subprocess.run(["python3", "games/othello.py", player1, player2], capture_output=True, text=True)
+                    result = subprocess.run(["python", "games/othello.py", player1, player2], capture_output=True, text=True)
                     winner = result.stdout.splitlines()[-1]
                     game_name = "Othello"
                 elif connect4_rect.collidepoint(mouse_pos):
-                    result = subprocess.run(["python3", "games/connect4.py", player1, player2], capture_output=True, text=True)
+                    result = subprocess.run(["python", "games/connect4.py", player1, player2], capture_output=True, text=True)
                     winner = result.stdout.splitlines()[-1]
                     game_name = "Connect4"
 
@@ -341,8 +341,9 @@ def main():
                     disp_c4 = connect4_rect
                     img_c4 = connect4
                 screen.blit(img_c4, disp_c4)
-        
+
         pg.display.update()
         clock.tick(60)
 if __name__ == "__main__":
     main()
+

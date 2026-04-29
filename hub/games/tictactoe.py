@@ -121,6 +121,12 @@ class Tic_Tac_Toe(Game):
                 if event.type==pg.QUIT:
                     pg.quit()
                     sys.exit()
+
+                if event.type==pg.KEYDOWN:
+                    if event.key==pg.K_r: #Press R to restart
+                        self.reset()
+                        self.switch_turn()
+
                 if event.type==pg.MOUSEBUTTONDOWN:
                     sound = self.cross_sound if self.player == 1 else self.circle_sound
                     sound.play(loops=0) # to play sound on click
@@ -134,23 +140,27 @@ class Tic_Tac_Toe(Game):
                             self.board[r][c]=self.player
                             if self.check_win(self.player,c,r):
                                 self.game_over=True
+                            elif self.board_full(): #check for tie
+                                self.game_over=True
+                                self.player=0
                             else:
                                 self.switch_turn()
-                if event.type==pg.KEYDOWN:
-                    if event.key==pg.K_r: #Press R to restart
-                        self.reset()
             self.screen.blit(self.bg, (0, 0))
             self.make_board(self.bg,self.tttboard, origin[0], origin[1]  )
             self.mark()
             self.draw_hover()
             if self.game_over:
+                font=self.nice_font
                 winner=self.current_player()
-                font=self.big_font
-                text=font.render(f"{winner} Wins!",True,(255,255,255))
-                text_rect=text.get_rect(center=(width//2, 130))
-                self.screen.blit(text, text_rect)
+
+                if winner == "Draw":
+                    text = font.render("Match tied", True, (255,255,255))
+                else:
+                    text=font.render(f"{winner} Wins!",True,(255,0,0) if self.player == 1 else (255,255,0))
+                # text_rect=text.get_rect(center=(width//2, 130))
+                self.show_text(text,(520,670))
                 pg.display.update()
-                pg.time.wait(3000)
+                pg.time.wait(1000)
                 return winner
             pg.display.update()
             clock.tick(60)
