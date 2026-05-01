@@ -152,4 +152,13 @@ while true; do
         break
     fi
 done
-python3 game.py "$Player1" "$Player2"
+chaos="chaos"
+normal="normal"
+    read -p "Do you want Chaos for TTicTacToe(Y/N): " choice
+    if [[ $choice == "Y" ]]; then
+        python3 game.py "$Player1" "$Player2" "$chaos"  
+    else
+        python3 game.py "$Player1" "$Player2" "$normal"  
+        echo -e "Launching Fungrid"
+    fi
+

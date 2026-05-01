@@ -135,6 +135,15 @@ class Tic_Tac_Toe(Game):
                     if origin[0]<=mX<=origin[0]+board_dim and origin[1]<=mY<=origin[1]+board_dim and not self.game_over: # check if click is inside board and game is not over
                         r,c=(mY-origin[1])//sq_dim,(mX-origin[0])//sq_dim
                         if self.board[r][c]==0:
+                            R = r
+                            C = c
+                            if sys.argv[3] == 'chaos':
+                                Moves = np.sum(self.board > 0 )
+                                if Moves%6 == 4 or Moves%6 == 5:
+                                    while (r== R and  c== C):
+                                        r = np.random.randint(1,10)
+                                        c = np.random.randint(1,10)
+
                             self.board[r][c]=self.player
                             if self.check_win(self.player,c,r):
                                 self.game_over=True

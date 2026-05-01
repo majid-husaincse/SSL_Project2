@@ -46,8 +46,8 @@ def post_game_options(screen): # Game over now main menu or quit
             pg.display.update()
         for event in pg.event.get():
             if event.type ==pg.QUIT:
-                pg.quit
-                sys.exit
+                pg.quit()
+                sys.exit()
             if event.type ==pg.MOUSEBUTTONDOWN:
                 if rects[1].collidepoint(event.pos):
                     pg.quit()
@@ -127,6 +127,7 @@ class Game:
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
+        self.mode = sys.argv[3]
 
         self.player = 1 #current player,1 is for player1 and 2 is for player2
         self.game_over = False
@@ -255,7 +256,7 @@ def main():
     #Storing player names from CLI
     player1 = sys.argv[1]
     player2 = sys.argv[2]
-
+    mode = sys.argv[3]
     bg = pg.image.load("games/game_resources/bg.png").convert_alpha()
     bg= pg.transform.scale(bg, (width, height))
 
@@ -320,17 +321,17 @@ def main():
 
                 #click on games to start them
                 if ttt_rect.collidepoint(mouse_pos):
-                    result = subprocess.run(["python3", "games/tictactoe.py", player1, player2], capture_output=True, text=True)
+                    result = subprocess.run(["python3", "games/tictactoe.py", player1, player2,mode], capture_output=True, text=True)
                     print(result.stderr)
                     winner = result.stdout.splitlines()[-1]
                     game_name = "TicTacToe"
                 elif othello_rect.collidepoint(mouse_pos):
-                    result = subprocess.run(["python3", "games/othello.py", player1, player2], capture_output=True, text=True)
+                    result = subprocess.run(["python3", "games/othello.py", player1, player2,mode], capture_output=True, text=True)
                     print(result.stderr)
                     winner = result.stdout.splitlines()[-1]
                     game_name = "Othello"
                 elif connect4_rect.collidepoint(mouse_pos):
-                    result = subprocess.run(["python3", "games/connect4.py", player1, player2], capture_output=True, text=True)
+                    result = subprocess.run(["python3", "games/connect4.py", player1, player2,mode], capture_output=True, text=True)
                     print(result.stderr)
                     winner = result.stdout.splitlines()[-1]
                     game_name = "Connect4"
