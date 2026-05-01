@@ -7,7 +7,6 @@ The games in the hub are:
 + Tic-Tac-Toe
 + Othello
 + Connect 4
-+ Game 4: TBD
 
 Run `bash main.sh` for user authentication.
 
